@@ -24,53 +24,50 @@ export const SignInForm = () => {
   };
 
   return (
-    <>
-      <h1 className="text-center text-3xl font-normal">Log In</h1>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          id="profile"
-          className="flex w-full max-w-96 flex-wrap items-center justify-center gap-4"
-        >
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        id="profile"
+        className="flex w-full max-w-96 flex-wrap items-center justify-center gap-4"
+      >
+        <FormField
+          control={form.control}
+          name="identifier"
+          render={({ field }) => (
+            <FormElement className="max-w-full">
+              <Input {...field} type="email" placeholder="Enter your email" />
+            </FormElement>
+          )}
+        />
+        <fieldset className="flex w-full flex-col items-end gap-1">
           <FormField
             control={form.control}
-            name="identifier"
+            name="password"
             render={({ field }) => (
-              <FormElement className="max-w-full">
-                <Input {...field} type="email" placeholder="Enter your email" />
+              <FormElement className="max-w-full text-primary">
+                <Input
+                  {...field}
+                  hidePasswordStrengthChecker
+                  type="password"
+                  placeholder="Enter your password"
+                />
               </FormElement>
             )}
           />
-          <fieldset className="flex w-full flex-col items-end gap-1">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormElement className="max-w-full text-primary">
-                  <Input
-                    {...field}
-                    type="password"
-                    placeholder="Enter your password"
-                  />
-                </FormElement>
-              )}
-            />
-            <Link
-              href="/auth/forgot-password"
-              className="text-small font-medium text-primary"
-            >
-              Forgot password?
-            </Link>
-          </fieldset>
-          <Button
-            type="submit"
-            disabled
-            className="flex w-full items-center justify-center text-base"
+          <Link
+            href="/auth/forgot-password"
+            className="text-small font-medium text-primary"
           >
-            Login
-          </Button>
-        </form>
-      </Form>
-    </>
+            Forgot password?
+          </Link>
+        </fieldset>
+        <Button
+          type="submit"
+          className="flex w-full items-center justify-center text-base"
+        >
+          Login
+        </Button>
+      </form>
+    </Form>
   );
 };
