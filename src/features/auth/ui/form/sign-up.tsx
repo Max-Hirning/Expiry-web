@@ -2,10 +2,20 @@
 
 import { useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSignUp } from 'entities/auth';
 import { useForm } from 'react-hook-form';
 
-import { Button, Form, FormElement, FormField, Input } from 'shared/ui';
+import {
+  Button,
+  FileUpload,
+  Form,
+  FormElement,
+  FormField,
+  Input,
+} from 'shared/ui';
 
 import { SignUpInput, signUpSchema } from '../../schemas';
 
@@ -15,6 +25,7 @@ enum Steps {
 }
 
 export const SignUpForm = () => {
+  const { push } = useRouter();
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -26,11 +37,36 @@ export const SignUpForm = () => {
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
+  const { mutate: signUp, isPending } = useSignUp();
   const [step, setStep] = useState<Steps>(Steps.GENERAL_INFO);
 
   const onSubmit = (value: SignUpInput) => {
-    // eslint-disable-next-line no-console
-    console.log(value);
+    signUp(
+      {
+        user: {
+          email: value.email,
+          phoneNumber: value.phoneNumber,
+          fullName: value.fullName,
+          password: value.password,
+        },
+        team: {
+          name: value.team,
+          // ...(value.teamLogo && {
+          //   logo: {
+          //     mimeType: value.teamLogo.type,
+          //     width: value.teamLogo.width,
+          //     height: value.teamLogo.height,
+          //     fileSize: value.teamLogo.size,
+          //   }
+          // })
+        },
+      },
+      {
+        onSuccess: () => {
+          push('/');
+        },
+      },
+    );
   };
 
   return (
@@ -99,6 +135,24 @@ export const SignUpForm = () => {
                   </FormElement>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="teamLogo"
+                render={({ field }) => (
+                  <FormElement label="Team Logo" className="max-w-full">
+                    <FileUpload
+                      multiple={false}
+                      accept="image/jpeg,image/png"
+                      onChange={([file]) => {
+                        if (file) {
+                          field.onChange(file);
+                        }
+                      }}
+                      value={field.value ? [field.value] : []}
+                    />
+                  </FormElement>
+                )}
+              />
               <Button
                 type="button"
                 onClick={async () => {
@@ -139,6 +193,7 @@ export const SignUpForm = () => {
               <div className="flex w-full flex-col gap-4">
                 <Button
                   type="submit"
+                  isLoading={isPending}
                   className="flex w-full items-center justify-center text-base"
                 >
                   Create Profile

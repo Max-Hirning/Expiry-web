@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 import { Slot } from '@radix-ui/react-slot';
@@ -69,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading && <LoaderCircle />}
+        {isLoading && <LoaderCircle className="animate-spin" />}
         {props.children}
       </Comp>
     );

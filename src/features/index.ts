@@ -1,2 +1,2 @@
-export * from './layout';
+export * from './team';
 export * from './auth';

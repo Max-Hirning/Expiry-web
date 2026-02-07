@@ -13,6 +13,10 @@ const config: Config = {
   				'sans-serif'
   			]
   		},
+		animation: {
+			'spin-slow': 'spin-slow 2s infinite',
+  			'spin-infinite': 'spin 1s linear infinite',
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

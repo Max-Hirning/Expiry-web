@@ -8,6 +8,8 @@ import { TanStackQueryProvider } from 'shared/providers';
 
 import 'app/styles/global.css';
 
+import { TooltipProvider } from 'shared/ui';
+
 const urbanist = Urbanist({
   subsets: ['latin'],
   variable: '--font-urbanist',
@@ -26,7 +28,9 @@ const Layout = ({ children }: Props) => {
   return (
     <html lang="en">
       <body className={cn(urbanist.className, 'h-screen w-screen')}>
-        <TanStackQueryProvider>{children}</TanStackQueryProvider>
+        <TanStackQueryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </TanStackQueryProvider>
       </body>
     </html>
   );

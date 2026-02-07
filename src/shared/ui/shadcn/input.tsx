@@ -1,4 +1,7 @@
+'use client';
+
 import * as React from 'react';
+import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Check, Eye, EyeOff, KeyRound, Mail, Search, X } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
@@ -51,11 +54,36 @@ const Input = React.forwardRef<
     },
     ref,
   ) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const [contentWidth, setContentWidth] = useState<number>();
     const [showPassword, setShowPassword] = React.useState(false);
     const [phoneNumberCountry, setPhoneNumberCountry] = React.useState<
       (typeof PHONE_NUMBER_COUNTRIES)['US']
     >(PHONE_NUMBER_COUNTRIES.US);
     const isPassword = showPassword ? 'text' : 'password';
+
+    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
+
+    useEffect(() => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      const element = inputRef.current;
+
+      const observer = new ResizeObserver(([entry]) => {
+        const { width } = entry.target.getBoundingClientRect();
+
+        setContentWidth(width);
+      });
+
+      observer.observe(element);
+
+      return () => {
+        observer.unobserve(element);
+        observer.disconnect();
+      };
+    }, [inputRef.current]);
 
     const togglePasswordVisibility = () => setShowPassword(state => !state);
 
@@ -129,7 +157,11 @@ const Input = React.forwardRef<
                 />
               </SelectValue>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              style={{
+                width: `${contentWidth}px`,
+              }}
+            >
               {Object.values(PHONE_NUMBER_COUNTRIES).map(
                 ({ code, name, dialCode }) => (
                   <SelectItem key={code} value={code}>
@@ -159,7 +191,7 @@ const Input = React.forwardRef<
                 : 'focus-visible:ring-ring',
               className,
             )}
-            ref={ref}
+            ref={inputRef}
             onChange={event => {
               if (type === 'tel') {
                 let val = event.target.value;

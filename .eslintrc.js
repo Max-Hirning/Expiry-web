@@ -33,8 +33,8 @@ module.exports = {
       'error',
       {
         patterns: [
-          'entities/*',
-          'features/*',
+          'entities/*/*',
+          'features/*/*',
           'widgets/*',
           'shared/constants/*',
           'shared/hooks/*',

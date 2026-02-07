@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSignIn } from 'entities/auth';
 import { useForm } from 'react-hook-form';
 
 import { Button, Form, FormElement, FormField, Input } from 'shared/ui';
@@ -10,6 +12,7 @@ import { Button, Form, FormElement, FormField, Input } from 'shared/ui';
 import { SignInInput, signInSchema } from '../../schemas';
 
 export const SignInForm = () => {
+  const { push } = useRouter();
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -17,10 +20,14 @@ export const SignInForm = () => {
       identifier: '',
     },
   });
+  const { mutate: signIn, isPending } = useSignIn();
 
   const onSubmit = (value: SignInInput) => {
-    // eslint-disable-next-line no-console
-    console.log(value);
+    signIn(value, {
+      onSuccess: () => {
+        push('/');
+      },
+    });
   };
 
   return (
@@ -63,6 +70,7 @@ export const SignInForm = () => {
         </fieldset>
         <Button
           type="submit"
+          isLoading={isPending}
           className="flex w-full items-center justify-center text-base"
         >
           Login

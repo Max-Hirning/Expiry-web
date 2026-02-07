@@ -1,3 +1,7 @@
 export enum QueryKeys {
   GET_TODOS,
+  GET_USERS,
+  GET_INFINITE_USERS,
+  GET_TEAMS,
+  GET_INFINITE_TEAMS,
 }
