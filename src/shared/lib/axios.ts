@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { env } from 'env';
+import qs from 'qs';
 
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
@@ -7,4 +8,5 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
+  paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
 });

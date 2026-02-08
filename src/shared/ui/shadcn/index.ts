@@ -10,3 +10,5 @@ export * from './tooltip';
 export * from './dropdown-menu';
 export * from './alert-dialog';
 export * from './scroll-area';
+export * from './popover';
+export * from './checkbox';

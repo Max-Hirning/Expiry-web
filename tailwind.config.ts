@@ -76,6 +76,22 @@ const config: Config = {
         '.min-h-full-screen': {
           minHeight: ['100vh', '100dvh'],
         },
+		'.main-position': {
+          position: 'fixed',
+          right: '0',
+          bottom: '0',
+		  backgroundColor: 'white',
+          height: 'calc(100% - 80px)',
+          width: 'calc(100% - 192px)',
+        },
+		'.header-position': {
+          position: 'fixed',
+          right: '0',
+		  height: '80px',
+		  backgroundColor: 'white',
+          top: '0',
+          width: 'calc(100% - 192px)',
+        },
       });
     }),
       require("tailwindcss-animate")
