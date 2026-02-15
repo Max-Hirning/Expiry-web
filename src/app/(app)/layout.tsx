@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { SideBar } from 'features';
+
 type Props = {
   children: ReactNode;
 };
@@ -7,7 +9,7 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <>
-      <aside className="fixed left-0 top-0 h-full w-[192px] bg-black" />
+      <SideBar />
       {children}
     </>
   );
