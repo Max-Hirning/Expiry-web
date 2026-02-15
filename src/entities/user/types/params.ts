@@ -4,6 +4,7 @@ import { IUser } from './responses';
 
 export interface IGetUsersParams extends IPaginationParams {
   search?: string;
+  teamId?: string;
   omitUsersIds?: string[];
   sortOrder?: 'desc' | 'asc';
   sortField?: keyof Pick<
