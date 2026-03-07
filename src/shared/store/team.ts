@@ -5,6 +5,8 @@ import { create } from 'zustand';
 
 interface ITeamStore {
   selectedTeam: null | ITeam;
+  selectedTagsIds: Set<string>;
+  selectedDocumentIds: Set<string>;
   tagsAndDocumentsFilters: Partial<
     Pick<
       IGetDocumentsParams,
@@ -28,11 +30,52 @@ interface ITeamStore {
         >
     > | null,
   ) => void;
+  toggleSelectedTagId: (id: string) => void;
+  resetSelectedTagIds: () => void;
+  toggleSelectedDocumentId: (id: string) => void;
+  resetSelectedDocumentIds: () => void;
 }
 
 export const useTeamStore = create<ITeamStore>(set => ({
   selectedTeam: null,
   tagsAndDocumentsFilters: null,
+  selectedTagsIds: new Set(),
+  selectedDocumentIds: new Set(),
+  resetSelectedTagIds: () =>
+    set(state => ({
+      ...state,
+      selectedTagsIds: new Set(),
+    })),
+  resetSelectedDocumentIds: () =>
+    set(state => ({
+      ...state,
+      selectedDocumentIds: new Set(),
+    })),
+  toggleSelectedTagId: id =>
+    set(state => {
+      const newSet = new Set(state.selectedTagsIds);
+
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+
+      return { selectedTagsIds: newSet };
+    }),
+
+  toggleSelectedDocumentId: id =>
+    set(state => {
+      const newSet = new Set(state.selectedDocumentIds);
+
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+
+      return { selectedDocumentIds: newSet };
+    }),
   updateTagsAndDocumentsFilters: payload =>
     set(state => ({
       ...state,

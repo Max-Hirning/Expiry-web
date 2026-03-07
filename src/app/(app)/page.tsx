@@ -15,6 +15,7 @@ import {
   Plus,
   Trash,
   Upload,
+  X,
 } from 'lucide-react';
 
 import { TeamSelector } from 'features';
@@ -25,6 +26,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  BulkMenu,
   Button,
   Checkbox,
   DropdownMenu,
@@ -40,7 +42,12 @@ import {
 interface IProps extends Pick<IGetDocumentsParams, 'tagsIds'> {}
 
 const DocumentsList: FC<IProps> = ({ tagsIds }) => {
-  const { selectedTeam, tagsAndDocumentsFilters } = useTeamStore();
+  const {
+    selectedTeam,
+    selectedDocumentIds,
+    toggleSelectedDocumentId,
+    tagsAndDocumentsFilters,
+  } = useTeamStore();
 
   const { data: documentsData } = useGetDocumentsInfiniteScroll({
     page: 1,
@@ -51,6 +58,8 @@ const DocumentsList: FC<IProps> = ({ tagsIds }) => {
   });
   const documents =
     documentsData?.pages.flatMap(page => page.data.documents) ?? [];
+
+  console.log(Array.from(selectedDocumentIds));
 
   return (
     <>
@@ -63,7 +72,11 @@ const DocumentsList: FC<IProps> = ({ tagsIds }) => {
               index + 1 === documents.length && 'border-none',
             )}
           >
-            <Checkbox className="mr-8" />
+            <Checkbox
+              className="mr-8"
+              checked={selectedDocumentIds.has(document.id)}
+              onCheckedChange={() => toggleSelectedDocumentId(document.id)}
+            />
             <p className="flex-1 text-sm">{document.name}</p>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -81,7 +94,7 @@ const DocumentsList: FC<IProps> = ({ tagsIds }) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Upload />
-                  Create new revision
+                  Create new version
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-destructive">
                   <Trash />
@@ -100,7 +113,12 @@ const Page = () => {
   const {
     selectedTeam,
     tagsAndDocumentsFilters,
+    selectedTagsIds,
+    selectedDocumentIds,
+    toggleSelectedTagId,
     updateTagsAndDocumentsFilters,
+    resetSelectedTagIds,
+    resetSelectedDocumentIds,
   } = useTeamStore();
 
   const { data: tagsData, isLoading } = useGetTagsInfiniteScroll({
@@ -138,7 +156,12 @@ const Page = () => {
         </section>
       </header>
       <main className="flex !h-[calc(100%-158px)] flex-col overflow-auto p-4 pt-0 main-position">
-        <p className="sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400">
+        <p
+          className={cn(
+            'sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400',
+            isLoading && 'hidden',
+          )}
+        >
           {documentsCounter} search result{documentsCounter > 1 ? 's' : ''}
         </p>
         <Accordion
@@ -167,7 +190,10 @@ const Page = () => {
                       'data-[state=closed]:rounded-b-lg',
                   )}
                 >
-                  <Checkbox />
+                  <Checkbox
+                    checked={selectedTagsIds.has(tag.id)}
+                    onCheckedChange={() => toggleSelectedTagId(tag.id)}
+                  />
                   <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
                   <span className="flex-1">{tag.tag}</span>
                   <span className="rounded-full bg-gray-300 px-[10px] py-[2px] text-xs">
@@ -218,6 +244,47 @@ const Page = () => {
           No Documents found
         </p>
       </main>
+      <BulkMenu
+        onResetAction={resetSelectedTagIds}
+        selectedAmount={selectedTagsIds.size}
+        totalAmount={tags.length}
+      >
+        <Button
+          variant="link"
+          className="flex h-8 items-center justify-center gap-2 px-3 py-2 text-xs text-white no-underline"
+        >
+          <Upload />
+          Create new document
+        </Button>
+        <Button
+          variant="destructive"
+          className="flex h-8 items-center justify-center gap-2 px-3 py-2 text-xs"
+        >
+          <Trash />
+          Delete
+        </Button>
+      </BulkMenu>
+      <BulkMenu
+        onResetAction={resetSelectedDocumentIds}
+        selectedAmount={selectedDocumentIds.size}
+        totalAmount={documentsCounter}
+        className="bottom-14"
+      >
+        <Button
+          variant="link"
+          className="flex h-8 items-center justify-center gap-2 px-3 py-2 text-xs text-white no-underline"
+        >
+          <Upload />
+          Create new version
+        </Button>
+        <Button
+          variant="destructive"
+          className="flex h-8 items-center justify-center gap-2 px-3 py-2 text-xs"
+        >
+          <Trash />
+          Delete
+        </Button>
+      </BulkMenu>
     </>
   );
 };
