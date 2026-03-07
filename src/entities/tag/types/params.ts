@@ -1,8 +1,15 @@
+import { IGetDocumentsParams } from 'entities/document';
+
 import { IPaginationParams } from 'shared/types';
 
 import { ITag } from './responses';
 
-export interface IGetTagsParams extends IPaginationParams {
+export interface IGetTagsParams
+  extends Pick<
+      IGetDocumentsParams,
+      'expiresAtDateRange' | 'statuses' | 'riskLevel'
+    >,
+    IPaginationParams {
   search?: string;
   teamId: string;
   sortOrder?: 'asc' | 'desc';

@@ -32,15 +32,21 @@ export const TeamStatProgress: FC<IProps> = ({ team }) => {
               >,
               string,
             ][]
-          ).map(([key, color]) => (
-            <div
-              key={key}
-              className={cn(color)}
-              style={{
-                width: `${Math.round((team.stats[key] / team.stats.totalDocuments) * 100)}%`,
-              }}
-            />
-          ))}
+          ).map(([key, color]) => {
+            if (!team.stats.totalDocuments || !team.stats[key]) {
+              return null;
+            }
+
+            return (
+              <div
+                key={key}
+                className={cn(color)}
+                style={{
+                  width: `${Math.round((team.stats[key] / team.stats.totalDocuments) * 100)}%`,
+                }}
+              />
+            );
+          })}
         </div>
       </TooltipTrigger>
       <TooltipContent

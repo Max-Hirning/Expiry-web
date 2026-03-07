@@ -27,6 +27,21 @@ export const SignInForm = () => {
       onSuccess: () => {
         push('/');
       },
+      onError: error => {
+        const statusCode = error.response?.data.statusCode;
+
+        if (statusCode === 404 && error.response?.data.message) {
+          form.setError('identifier', {
+            message: error.response.data.message,
+          });
+        }
+
+        if (statusCode === 409 && error.response?.data.message) {
+          form.setError('password', {
+            message: error.response.data.message,
+          });
+        }
+      },
     });
   };
 

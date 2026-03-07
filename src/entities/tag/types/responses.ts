@@ -5,6 +5,7 @@ export interface ITag {
   createdAt: string;
   updatedAt: string;
   tag: string;
+  documents: number;
 }
 
 export interface ITagResponse {
