@@ -14,8 +14,6 @@ export const useGetDocuments = (query: IGetDocumentsParams) => {
 };
 
 export const useGetDocumentsInfiniteScroll = (query: IGetDocumentsParams) => {
-  console.log('query', query);
-
   return useInfiniteQuery({
     initialPageParam: 1,
     queryKey: [QueryKeys.GET_INFINITE_DOCUMENTS, query],
