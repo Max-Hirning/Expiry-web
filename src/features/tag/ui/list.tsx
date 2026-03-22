@@ -29,6 +29,8 @@ import {
   DropdownMenuTrigger,
 } from 'shared/ui';
 
+import { TagsListElement } from './element';
+
 export const TagsList = () => {
   const {
     selectedTeam,
@@ -83,45 +85,13 @@ export const TagsList = () => {
               <AccordionTrigger
                 hideIcon
                 className={cn(
-                  'justify-start gap-4 bg-gray-50 px-4 py-2',
+                  'group justify-start gap-4 bg-gray-50 p-0',
                   index === 0 && 'rounded-t-lg',
                   index + 1 === tags.length &&
                     'data-[state=closed]:rounded-b-lg',
                 )}
               >
-                <Checkbox
-                  checked={selectedTagsIds.has(tag.id)}
-                  onCheckedChange={() => toggleSelectedTagId(tag.id)}
-                />
-                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-                <span className="flex-1">{tag.tag}</span>
-                <span className="rounded-full bg-gray-300 px-[10px] py-[2px] text-xs">
-                  {tag.documents} document{tag.documents > 1 ? 's' : ''}
-                </span>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className="h-7 w-7 border-none bg-transparent p-0 shadow-none"
-                      variant="outline"
-                    >
-                      <EllipsisVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="p-2">
-                    <DropdownMenuItem>
-                      <Pencil />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Upload />
-                      Create new document
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
-                      <Trash />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <TagsListElement tag={tag} />
               </AccordionTrigger>
               <AccordionContent className="pb-0">
                 <DocumentsList tagsIds={[tag.id]} />

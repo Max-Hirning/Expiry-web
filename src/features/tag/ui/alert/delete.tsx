@@ -1,0 +1,73 @@
+'use client';
+
+import { FC } from 'react';
+
+import { useDeleteDocument } from 'entities/document';
+import { useDeleteTeam } from 'entities/team';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from 'shared/ui';
+
+interface IProps {
+  teamId: string;
+  open: boolean;
+  tagId: string;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const TagDeleteAlert: FC<IProps> = ({
+  tagId,
+  teamId,
+  open,
+  onOpenChange,
+}) => {
+  const { mutate: deleteDocument, isPending } = useDeleteDocument();
+
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your tag
+            from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending} className="h-9">
+            {isPending ? 'Deleting...' : 'Cancel'}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            disabled={isPending}
+            onClick={event => {
+              event.preventDefault();
+              deleteDocument(
+                {
+                  teamId,
+                  documentId: tagId,
+                },
+                {
+                  onSuccess: () => {
+                    onOpenChange(false);
+                  },
+                },
+              );
+            }}
+            variant="destructive"
+            className="h-9"
+          >
+            {isPending ? 'Deleting...' : 'Delete'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};

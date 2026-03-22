@@ -2,12 +2,16 @@
 
 import { Plus } from 'lucide-react';
 
+import { CreateDocumentModal } from 'features/document';
 import { useTeamStore } from 'shared/store';
 import { Button, Input } from 'shared/ui';
 
 export const TagsListFilters = () => {
-  const { tagsAndDocumentsFilters, updateTagsAndDocumentsFilters } =
-    useTeamStore();
+  const {
+    tagsAndDocumentsFilters,
+    selectedTeam,
+    updateTagsAndDocumentsFilters,
+  } = useTeamStore();
 
   return (
     <section className="flex w-full items-center justify-end gap-4">
@@ -21,10 +25,15 @@ export const TagsListFilters = () => {
         }
         className="w-[373px]"
       />
-      <Button className="flex items-center justify-center gap-2">
-        <Plus />
-        Add
-      </Button>
+      <CreateDocumentModal teamName={selectedTeam?.name || ''}>
+        <Button
+          disabled={!selectedTeam?.name}
+          className="flex items-center justify-center gap-2"
+        >
+          <Plus />
+          Add
+        </Button>
+      </CreateDocumentModal>
     </section>
   );
 };
