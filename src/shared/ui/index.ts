@@ -4,3 +4,4 @@ export * from './file-upload';
 export * from './infinite-scroll';
 export * from './search-select';
 export * from './bulk-menu';
+export * from './table';

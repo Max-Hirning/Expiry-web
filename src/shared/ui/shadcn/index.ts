@@ -13,3 +13,4 @@ export * from './scroll-area';
 export * from './popover';
 export * from './checkbox';
 export * from './accordion';
+export * from './table';
