@@ -1,11 +1,7 @@
 import { FC } from 'react';
 
 import { cn } from 'shared/lib';
-import { UserStatuses } from 'shared/types';
-
-interface IProps {
-  status: UserStatuses;
-}
+import { TeamMemberRoles, UserStatuses } from 'shared/types';
 
 const userStatusesStylesMap: Record<UserStatuses, string> = {
   [UserStatuses.ACTIVE]: 'text-green-600 bg-green-100',
@@ -13,7 +9,9 @@ const userStatusesStylesMap: Record<UserStatuses, string> = {
   [UserStatuses.INVITED]: 'text-blue-600 bg-blue-100',
 };
 
-export const UserStatusBadge: FC<IProps> = ({ status }) => {
+export const UserStatusBadge: FC<{
+  status: UserStatuses;
+}> = ({ status }) => {
   return (
     <span
       className={cn(
@@ -22,6 +20,26 @@ export const UserStatusBadge: FC<IProps> = ({ status }) => {
       )}
     >
       {status.toLowerCase().replaceAll('_', ' ')}
+    </span>
+  );
+};
+
+const teamMemberRolesStylesMap: Record<TeamMemberRoles, string> = {
+  [TeamMemberRoles.ADMIN]: 'text-yellow-600 bg-yellow-100',
+  [TeamMemberRoles.STAFF]: 'text-green-600 bg-green-100',
+};
+
+export const TeamMemberRoleBadge: FC<{
+  role: TeamMemberRoles;
+}> = ({ role }) => {
+  return (
+    <span
+      className={cn(
+        teamMemberRolesStylesMap[role],
+        'flex h-5 w-14 items-center justify-center rounded-full text-xs font-medium capitalize',
+      )}
+    >
+      {role.toLowerCase().replaceAll('_', ' ')}
     </span>
   );
 };

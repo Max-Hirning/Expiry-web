@@ -1,5 +1,6 @@
 'use client';
 
+import { format } from 'date-fns';
 import { IUser } from 'entities';
 import { SquareArrowOutUpRight, X } from 'lucide-react';
 
@@ -14,6 +15,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  TeamMemberRoleBadge,
   UserAvatar,
   UserStatusBadge,
 } from 'shared/ui';
@@ -88,13 +90,33 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
             </SheetHeader>
 
             <dl className="flex flex-col gap-4 px-4 py-3">
-              {/* TODO: replace '—' with actual invitedAt date */}
-              <DrawerRow label="Invited at" value="—" />
-              {/* TODO: replace '—' with actual position field */}
-              <DrawerRow label="Position" value="—" />
+              <DrawerRow
+                label="Invited at"
+                value={
+                  user.invitedAt
+                    ? format(new Date(user.invitedAt), 'MMM d, yyyy, h:mma')
+                    : '—'
+                }
+              />
+              <DrawerRow
+                label="Position"
+                value={
+                  user.position ? (
+                    <TeamMemberRoleBadge role={user.position} />
+                  ) : (
+                    '—'
+                  )
+                }
+              />
               <DrawerRow label="User email" value={user.email} />
-              {/* TODO: replace '—' with actual lastLoginAt date */}
-              <DrawerRow label="Last login at" value="—" />
+              <DrawerRow
+                label="Last login at"
+                value={
+                  user.lastLoginAt
+                    ? format(new Date(user.lastLoginAt), 'MMM d, yyyy, h:mma')
+                    : '—'
+                }
+              />
             </dl>
           </>
         )}

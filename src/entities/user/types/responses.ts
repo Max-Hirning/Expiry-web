@@ -1,6 +1,7 @@
 import {
   IPaginationResponse,
   MfaTypes,
+  TeamMemberRoles,
   UserRoles,
   UserStatuses,
 } from 'shared/types';
@@ -30,6 +31,9 @@ export interface IUser {
   id: string;
   createdAt: string;
   updatedAt: string;
+  position: TeamMemberRoles | null;
+  lastLoginAt: string | null;
+  invitedAt: string | null;
   fullName: string;
   email: string;
   phoneNumber: string;
