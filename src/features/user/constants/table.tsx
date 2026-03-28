@@ -27,7 +27,10 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex h-12 items-center justify-center px-4 py-2.5">
+      <div
+        className="flex h-12 items-center justify-center px-4 py-2.5"
+        onClick={event => event.stopPropagation()}
+      >
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={value => row.toggleSelected(Boolean(value))}

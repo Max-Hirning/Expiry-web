@@ -1,16 +1,23 @@
 'use client';
 
-import { useGetUsers } from 'entities';
+import { useState } from 'react';
+
+import { IUser, useGetUsers } from 'entities';
 import { Plus, Users } from 'lucide-react';
 
 import { useTeamStore, useUserStore } from 'shared/store';
 import { Button, DataTable } from 'shared/ui';
 
 import { columns } from '../constants';
+import { UserDrawer } from './drawer';
 
 export const UsersTable = () => {
   const { selectedTeam } = useTeamStore();
   const { usersFilters } = useUserStore();
+  const [selectedUser, setSelectedUser] = useState<Omit<
+    IUser,
+    'unReadNotifications'
+  > | null>(null);
 
   const { data: usersData, isLoading } = useGetUsers({
     page: 1,
@@ -46,5 +53,14 @@ export const UsersTable = () => {
     );
   }
 
-  return <DataTable columns={columns} data={users} />;
+  return (
+    <>
+      <DataTable columns={columns} data={users} onRowClick={setSelectedUser} />
+      <UserDrawer
+        user={selectedUser}
+        open={!!selectedUser}
+        onClose={() => setSelectedUser(null)}
+      />
+    </>
+  );
 };

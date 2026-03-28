@@ -18,7 +18,7 @@ export const UserStatusBadge: FC<IProps> = ({ status }) => {
     <span
       className={cn(
         userStatusesStylesMap[status],
-        'flex h-5 w-14 items-center justify-center rounded-full',
+        'flex h-5 w-14 items-center justify-center rounded-full text-xs font-medium capitalize',
       )}
     >
       {status.toLowerCase().replaceAll('_', ' ')}

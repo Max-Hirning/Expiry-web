@@ -7,3 +7,4 @@ export * from './bulk-menu';
 export * from './table';
 export * from './multi-value-input';
 export * from './badge';
+export * from './avatar';

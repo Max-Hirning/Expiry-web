@@ -15,3 +15,6 @@ export * from './checkbox';
 export * from './accordion';
 export * from './table';
 export * from './dialog';
+export * from './sheet';
+export * from './avatar';
+export * from './breadcrumb';
