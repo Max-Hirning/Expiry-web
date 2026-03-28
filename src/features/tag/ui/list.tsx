@@ -3,14 +3,7 @@
 import { useMemo } from 'react';
 
 import { useGetTagsInfiniteScroll } from 'entities/tag';
-import {
-  ChevronDown,
-  EllipsisVertical,
-  LoaderCircle,
-  Pencil,
-  Trash,
-  Upload,
-} from 'lucide-react';
+import { LoaderCircle, Trash, Upload } from 'lucide-react';
 
 import { DocumentsList } from 'features/document';
 import { cn } from 'shared/lib';
@@ -22,11 +15,6 @@ import {
   AccordionTrigger,
   BulkMenu,
   Button,
-  Checkbox,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
 } from 'shared/ui';
 
 import { TagsListElement } from './element';

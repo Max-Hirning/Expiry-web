@@ -1,53 +1,50 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useGetUsers } from 'entities';
+import { Plus, Users } from 'lucide-react';
 
-import { useGetTagsInfiniteScroll, useGetUsers } from 'entities';
-import {
-  ChevronDown,
-  EllipsisVertical,
-  LoaderCircle,
-  Pencil,
-  Trash,
-  Upload,
-} from 'lucide-react';
-
-import { DocumentsList } from 'features/document';
-import { cn } from 'shared/lib';
-import { useTeamStore } from 'shared/store';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  BulkMenu,
-  Button,
-  Checkbox,
-  DataTable,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from 'shared/ui';
+import { useTeamStore, useUserStore } from 'shared/store';
+import { Button, DataTable } from 'shared/ui';
 
 import { columns } from '../constants';
 
 export const UsersTable = () => {
-  const {
-    selectedTeam,
-    tagsAndDocumentsFilters,
-    selectedTagsIds,
-    toggleSelectedTagId,
-    resetSelectedTagIds,
-    resetSelectedDocumentIds,
-    selectedDocumentIds,
-  } = useTeamStore();
+  const { selectedTeam } = useTeamStore();
+  const { usersFilters } = useUserStore();
 
-  const { data: users, isLoading } = useGetUsers({
+  const { data: usersData, isLoading } = useGetUsers({
     page: 1,
     perPage: 10,
+    ...(usersFilters || {}),
     teamId: selectedTeam?.id || '',
   });
+  const users = usersData?.data.users || [];
 
-  return <DataTable columns={columns} data={users?.data.users || []} />;
+  if (isLoading) {
+    return null;
+  }
+
+  if (!isLoading && users.length === 0) {
+    return (
+      <section className="m-auto flex flex-col items-center justify-center gap-5">
+        <div className="flex h-48 w-48 items-center justify-center rounded-full bg-gray-200">
+          <Users size={85} className="text-gray-600" />
+        </div>
+        <article className="flex flex-col items-center justify-center gap-2">
+          <h1 className="text-lg font-semibold">No users yet</h1>
+          <p className="text-center text-sm">
+            Created users will be
+            <br />
+            displayed here
+          </p>
+        </article>
+        <Button className="flex gap-4">
+          <Plus />
+          Invite User
+        </Button>
+      </section>
+    );
+  }
+
+  return <DataTable columns={columns} data={users} />;
 };

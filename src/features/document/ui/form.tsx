@@ -1,13 +1,10 @@
 'use client';
 
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC } from 'react';
 
-import { X } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { cn } from 'shared/lib';
 import {
-  Button,
   FileUpload,
   FormElement,
   FormField,

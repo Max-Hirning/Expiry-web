@@ -1,10 +1,10 @@
-import { UsersTable, UsersTableFilters } from 'features';
+import { TeamSelector, UsersTable, UsersTableFilters } from 'features';
 
 const Page = () => {
   return (
     <>
       <header className="sticky top-0 flex !h-fit flex-col gap-4 p-4 header-position">
-        <h1 className="flex-1 text-xl font-semibold">Teammates</h1>
+        <TeamSelector />
         <UsersTableFilters />
       </header>
       <main className="flex !h-[calc(100%-158px)] flex-col overflow-auto p-4 pt-0 main-position">

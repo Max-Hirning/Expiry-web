@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 
 import { cn } from 'shared/lib';
 
-import { Button, Input } from './shadcn';
+import { Button } from './shadcn';
 
 interface IProps {
   onChange: (values: string[]) => void;

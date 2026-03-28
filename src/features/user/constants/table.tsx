@@ -4,7 +4,6 @@ import { ColumnDef } from '@tanstack/react-table';
 import { IUser } from 'entities';
 import { EllipsisVertical, History, Trash } from 'lucide-react';
 
-import { cn } from 'shared/lib';
 import { UserStatuses } from 'shared/types';
 import {
   Button,
@@ -13,13 +12,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  UserStatusBadge,
 } from 'shared/ui';
 
 export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
   {
     id: 'select',
     header: ({ table }) => (
-      <div className="flex h-7 items-center px-4 py-1">
+      <div className="flex h-10 items-center justify-center px-4 py-1">
         <Checkbox
           checked={table.getIsAllRowsSelected()}
           onCheckedChange={value => table.toggleAllRowsSelected(Boolean(value))}
@@ -27,7 +27,7 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex h-10 items-center px-4 py-2.5">
+      <div className="flex h-12 items-center justify-center px-4 py-2.5">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={value => row.toggleSelected(Boolean(value))}
@@ -38,14 +38,16 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
   {
     accessorKey: 'fullName',
     header: () => (
-      <p className="body-md h-7 truncate px-4 py-1 font-semibold">User</p>
+      <p className="body-md flex h-10 items-center truncate px-4 py-1 font-semibold">
+        User
+      </p>
     ),
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { fullName } = row.original;
 
       return (
-        <p className="test-sm h-10 truncate px-4 py-2.5 font-normal text-gray-500">
-          {id}
+        <p className="test-sm flex h-12 items-center truncate px-4 py-2.5 font-normal text-gray-500">
+          {fullName}
         </p>
       );
     },
@@ -53,13 +55,15 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
   {
     accessorKey: 'email',
     header: () => (
-      <p className="body-md h-7 truncate px-4 py-1 font-semibold">Email</p>
+      <p className="body-md flex h-10 items-center truncate px-4 py-1 font-semibold">
+        Email
+      </p>
     ),
     cell: ({ row }) => {
       const { email } = row.original;
 
       return (
-        <p className="test-sm h-10 truncate px-4 py-2.5 font-normal text-gray-500">
+        <p className="test-sm flex h-12 items-center truncate px-4 py-2.5 font-normal text-gray-500">
           {email}
         </p>
       );
@@ -68,7 +72,7 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
   {
     accessorKey: 'phoneNumber',
     header: () => (
-      <p className="body-md h-7 truncate px-4 py-1 font-semibold">
+      <p className="body-md flex h-10 items-center truncate px-4 py-1 font-semibold">
         Phone number
       </p>
     ),
@@ -76,7 +80,7 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
       const { phoneNumber } = row.original;
 
       return (
-        <p className="test-sm h-10 truncate px-4 py-2.5 font-normal text-gray-500">
+        <p className="test-sm flex h-12 items-center truncate px-4 py-2.5 font-normal text-gray-500">
           {phoneNumber}
         </p>
       );
@@ -85,14 +89,16 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
   {
     accessorKey: 'status',
     header: () => (
-      <p className="body-md h-7 truncate px-4 py-1 font-semibold">Status</p>
+      <p className="body-md flex h-10 items-center truncate px-4 py-1 font-semibold">
+        Status
+      </p>
     ),
     cell: ({ row }) => {
       const { status } = row.original;
 
       return (
-        <p className="test-sm h-10 truncate px-4 py-2.5 font-normal capitalize text-gray-900">
-          {status.toLowerCase().replaceAll('_', ' ')}
+        <p className="test-sm flex h-12 items-center truncate px-4 py-2.5 font-normal capitalize text-gray-900">
+          <UserStatusBadge status={status} />
         </p>
       );
     },
@@ -104,11 +110,11 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
       const { status } = row.original;
 
       return (
-        <div className="test-sm h-10 px-4 py-2.5 font-normal text-gray-500">
+        <div className="test-sm flex h-12 items-center justify-center px-4 py-2.5 font-normal text-gray-500">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                className="h-7 w-7 border-none bg-transparent p-0 shadow-none"
+                className="h-[28px] w-[28px] border-none bg-transparent p-0 shadow-none"
                 variant="outline"
               >
                 <EllipsisVertical />

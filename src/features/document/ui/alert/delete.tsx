@@ -3,7 +3,6 @@
 import { FC } from 'react';
 
 import { useDeleteDocument } from 'entities/document';
-import { useDeleteTeam } from 'entities/team';
 
 import {
   AlertDialog,
