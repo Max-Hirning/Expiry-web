@@ -5,3 +5,4 @@ export * from './infinite-scroll';
 export * from './search-select';
 export * from './bulk-menu';
 export * from './table';
+export * from './multi-value-input';
