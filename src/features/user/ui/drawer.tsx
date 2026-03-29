@@ -1,18 +1,17 @@
 'use client';
 
 import { format } from 'date-fns';
-import { IUser, useGetActionLogsInfiniteScroll } from 'entities';
+import { IUser } from 'entities';
 import {
   FileText,
   History,
-  LoaderCircle,
   MessageSquare,
   SquareArrowOutUpRight,
-  UserRound,
   X,
 } from 'lucide-react';
 
-import { useTeamStore } from 'shared/store';
+import { ActionLogsList } from 'features/action-log';
+import { DocumentsList } from 'features/document';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,7 +19,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
   Button,
-  InfiniteScroll,
   Sheet,
   SheetContent,
   SheetHeader,
@@ -55,20 +53,6 @@ const DrawerRow = ({ label, value }: DrawerRowProps) => {
 };
 
 export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
-  const { selectedTeam } = useTeamStore();
-  const {
-    data: actionLogsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetActionLogsInfiniteScroll({
-    page: 1,
-    teamId: selectedTeam?.id || '',
-    perPage: 10,
-  });
-  const actionLogs =
-    actionLogsData?.pages.map(({ data }) => data.actionLogs).flat(1) || [];
-
   return (
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
@@ -177,28 +161,14 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
               </TabsList>
 
               <TabsContent value="activity">
-                {/* <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <History size={32} className="text-gray-300" />
-                  No activity yet
-                </div> */}
-                {actionLogs.map(actionLog => (
-                  <p key={actionLog.id}>{actionLog.type}</p>
-                ))}
-                <InfiniteScroll
-                  next={fetchNextPage}
-                  hasMore={hasNextPage}
-                  isLoading={isFetchingNextPage}
-                >
-                  {hasNextPage && (
-                    <LoaderCircle size={24} className="animate-spin" />
-                  )}
-                </InfiniteScroll>
+                <ActionLogsList actorIds={user ? [user?.id] : undefined} />
               </TabsContent>
               <TabsContent value="documents">
-                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <FileText size={32} className="text-gray-300" />
-                  No documents yet
-                </div>
+                <DocumentsList
+                  hideCheckbox
+                  actorId={user?.id || undefined}
+                  authorsIds={user ? [user.id] : undefined}
+                />
               </TabsContent>
               <TabsContent value="chats">
                 <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">

@@ -1,4 +1,5 @@
 import {
+  ActionLogTypes,
   DocumentStatuses,
   IPaginationResponse,
   RiskLevels,
@@ -25,11 +26,12 @@ export interface IDocument {
   expiresAt: string | null;
   riskLevel: RiskLevels | null;
   files: IFile[];
+  actions: Record<string, ActionLogTypes[]>;
 }
 
 export interface IDocumentResponse {
   message: string;
-  data: IDocument;
+  data: Omit<IDocument, 'actions'>;
 }
 
 export interface ICreateDocumentResponse extends IDocumentResponse {

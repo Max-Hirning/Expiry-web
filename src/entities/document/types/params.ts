@@ -5,6 +5,7 @@ import { IDocument } from './responses';
 export interface IGetDocumentsParams extends IPaginationParams {
   search?: string;
   teamId: string;
+  authorsIds?: string[];
   statuses?: DocumentStatuses[];
   expiresAtDateRange?: [string, string];
   riskLevel?: RiskLevels[];

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { cn } from 'shared/lib';
-import { TeamMemberRoles, UserStatuses } from 'shared/types';
+import { ActionLogTypes, TeamMemberRoles, UserStatuses } from 'shared/types';
 
 const userStatusesStylesMap: Record<UserStatuses, string> = {
   [UserStatuses.ACTIVE]: 'text-green-600 bg-green-100',
@@ -40,6 +40,33 @@ export const TeamMemberRoleBadge: FC<{
       )}
     >
       {role.toLowerCase().replaceAll('_', ' ')}
+    </span>
+  );
+};
+
+const actionLogTypesStylesMap: Record<ActionLogTypes, string> = {
+  [ActionLogTypes.CREATE_TEAM]: 'text-blue-600 bg-blue-100',
+  [ActionLogTypes.UPDATE_TEAM]: 'text-blue-600 bg-blue-100',
+  [ActionLogTypes.ADD_USER]: 'text-green-600 bg-green-100',
+  [ActionLogTypes.INVITE_USER]: 'text-green-600 bg-green-100',
+  [ActionLogTypes.DELETE_USER]: 'text-red-600 bg-red-100',
+  [ActionLogTypes.DELETE_HIMSELF]: 'text-red-600 bg-red-100',
+  [ActionLogTypes.CREATE_DOCUMENT]: 'text-violet-600 bg-violet-100',
+  [ActionLogTypes.UPDATE_DOCUMENT]: 'text-violet-600 bg-violet-100',
+  [ActionLogTypes.DELETE_DOCUMENT]: 'text-red-600 bg-red-100',
+};
+
+export const ActionLogTypeBadge: FC<{
+  type: ActionLogTypes;
+}> = ({ type }) => {
+  return (
+    <span
+      className={cn(
+        actionLogTypesStylesMap[type],
+        'flex h-5 items-center justify-center rounded-full px-2 text-xs font-medium capitalize',
+      )}
+    >
+      {type.toLowerCase().replaceAll('_', ' ')}
     </span>
   );
 };

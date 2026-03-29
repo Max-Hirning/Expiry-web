@@ -8,6 +8,7 @@ import { EllipsisVertical, Pencil, Trash, Upload } from 'lucide-react';
 import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
 import {
+  ActionLogTypeBadge,
   Button,
   Checkbox,
   DropdownMenu,
@@ -20,13 +21,23 @@ import { DocumentDeleteAlert } from './alert';
 
 interface IProps {
   document: Omit<IDocument, 'files'>;
+  hideCheckbox?: boolean;
   isLast: boolean;
+  actorId?: string;
 }
 
-export const DocumentsListElement: FC<IProps> = ({ isLast, document }) => {
+export const DocumentsListElement: FC<IProps> = ({
+  hideCheckbox,
+  actorId,
+  isLast,
+  document,
+}) => {
   const { selectedTeam, selectedDocumentIds, toggleSelectedDocumentId } =
     useTeamStore();
   const [open, setOpen] = useState<boolean>(false);
+  const actions = actorId
+    ? Array.from(new Set(document.actions[actorId] || []))
+    : [];
 
   return (
     <div
@@ -36,11 +47,14 @@ export const DocumentsListElement: FC<IProps> = ({ isLast, document }) => {
       )}
     >
       <Checkbox
-        className="mr-8"
+        className={cn('mr-8', hideCheckbox && 'hidden')}
         checked={selectedDocumentIds.has(document.id)}
         onCheckedChange={() => toggleSelectedDocumentId(document.id)}
       />
       <p className="flex-1 text-sm">{document.name}</p>
+      {actions.map(action => (
+        <ActionLogTypeBadge key={action} type={action} />
+      ))}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
