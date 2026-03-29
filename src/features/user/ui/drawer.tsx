@@ -80,7 +80,11 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
             </header>
 
             <SheetHeader className="flex-row items-center gap-3 px-4 py-3">
-              <UserAvatar avatar={user.avatar} fullName={user.fullName} />
+              <UserAvatar
+                avatar={user.avatar}
+                isOnline={user.isOnline}
+                fullName={user.fullName}
+              />
               <div className="flex flex-col gap-0.5">
                 <UserStatusBadge status={user.status} />
                 <SheetTitle className="text-lg font-medium">

@@ -31,6 +31,8 @@ export interface IUser {
   id: string;
   createdAt: string;
   updatedAt: string;
+  lastSeenAt: string | null;
+  isOnline: boolean;
   position: TeamMemberRoles | null;
   lastLoginAt: string | null;
   invitedAt: string | null;

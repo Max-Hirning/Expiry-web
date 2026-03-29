@@ -43,3 +43,23 @@ export const TeamMemberRoleBadge: FC<{
     </span>
   );
 };
+
+const userOnlineStatusStylesMap: Record<string, string> = {
+  false: 'bg-yellow-500',
+  true: 'bg-green-500',
+};
+
+export const UserOnlineStatusBadge: FC<{
+  isOnline: boolean;
+  className?: string;
+}> = ({ isOnline, className }) => {
+  return (
+    <span
+      className={cn(
+        userOnlineStatusStylesMap[String(isOnline)],
+        'h-3 w-3 rounded-full',
+        className,
+      )}
+    />
+  );
+};
