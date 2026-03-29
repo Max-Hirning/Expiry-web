@@ -2,7 +2,14 @@
 
 import { format } from 'date-fns';
 import { IUser } from 'entities';
-import { SquareArrowOutUpRight, X } from 'lucide-react';
+import {
+  FileText,
+  History,
+  MessageSquare,
+  SquareArrowOutUpRight,
+  UserRound,
+  X,
+} from 'lucide-react';
 
 import {
   Breadcrumb,
@@ -15,6 +22,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   TeamMemberRoleBadge,
   UserAvatar,
   UserStatusBadge,
@@ -122,6 +133,51 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
                 }
               />
             </dl>
+
+            <Tabs defaultValue="activity" className="px-4 py-3">
+              <TabsList className="h-auto w-full items-center justify-start gap-1 rounded-xl bg-gray-100 p-1">
+                <TabsTrigger
+                  value="activity"
+                  className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  <History size={16} />
+                  Activity
+                </TabsTrigger>
+                <TabsTrigger
+                  value="documents"
+                  className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  <FileText size={16} />
+                  Documents
+                </TabsTrigger>
+                <TabsTrigger
+                  value="chats"
+                  className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                >
+                  <MessageSquare size={16} />
+                  Chats
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="activity">
+                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
+                  <History size={32} className="text-gray-300" />
+                  No activity yet
+                </div>
+              </TabsContent>
+              <TabsContent value="documents">
+                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
+                  <FileText size={32} className="text-gray-300" />
+                  No documents yet
+                </div>
+              </TabsContent>
+              <TabsContent value="chats">
+                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
+                  <MessageSquare size={32} className="text-gray-300" />
+                  No chats yet
+                </div>
+              </TabsContent>
+            </Tabs>
           </>
         )}
       </SheetContent>

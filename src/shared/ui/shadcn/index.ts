@@ -18,3 +18,4 @@ export * from './dialog';
 export * from './sheet';
 export * from './avatar';
 export * from './breadcrumb';
+export * from './tabs';
