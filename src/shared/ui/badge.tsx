@@ -57,7 +57,7 @@ export const UserOnlineStatusBadge: FC<{
     <span
       className={cn(
         userOnlineStatusStylesMap[String(isOnline)],
-        'h-3 w-3 rounded-full',
+        'size-3 rounded-full',
         className,
       )}
     />

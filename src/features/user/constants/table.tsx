@@ -12,6 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  UserAvatar,
   UserStatusBadge,
 } from 'shared/ui';
 
@@ -46,10 +47,17 @@ export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
       </p>
     ),
     cell: ({ row }) => {
-      const { fullName } = row.original;
+      const { fullName, avatar, isOnline } = row.original;
 
       return (
-        <p className="test-sm flex h-12 items-center truncate px-4 py-2.5 font-normal text-gray-500">
+        <p className="test-sm flex h-12 items-center gap-2 truncate px-4 py-2.5 font-normal text-gray-500">
+          <UserAvatar
+            className="size-9"
+            classNameOnlineBadge="size-2"
+            avatar={avatar}
+            isOnline={isOnline}
+            fullName={fullName}
+          />
           {fullName}
         </p>
       );
