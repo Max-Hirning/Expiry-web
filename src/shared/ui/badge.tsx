@@ -1,7 +1,13 @@
 import { FC } from 'react';
 
 import { cn } from 'shared/lib';
-import { ActionLogTypes, TeamMemberRoles, UserStatuses } from 'shared/types';
+import {
+  ActionLogTypes,
+  DocumentStatuses,
+  RiskLevels,
+  TeamMemberRoles,
+  UserStatuses,
+} from 'shared/types';
 
 const userStatusesStylesMap: Record<UserStatuses, string> = {
   [UserStatuses.ACTIVE]: 'text-green-600 bg-green-100',
@@ -88,5 +94,49 @@ export const UserOnlineStatusBadge: FC<{
         className,
       )}
     />
+  );
+};
+
+const documentStatusesStylesMap: Record<DocumentStatuses, string> = {
+  [DocumentStatuses.PROCESSING]: 'text-blue-600 bg-blue-100',
+  [DocumentStatuses.ACTIVE]: 'text-green-600 bg-green-100',
+  [DocumentStatuses.ARCHIVED]: 'text-gray-600 bg-gray-100',
+  [DocumentStatuses.FAILED]: 'text-red-600 bg-red-100',
+  [DocumentStatuses.NEEDS_REVIEW]: 'text-orange-600 bg-orange-100',
+};
+
+export const DocumentStatusBadge: FC<{
+  status: DocumentStatuses;
+}> = ({ status }) => {
+  return (
+    <span
+      className={cn(
+        documentStatusesStylesMap[status],
+        'flex h-5 items-center justify-center rounded-full px-2 text-xs font-medium capitalize',
+      )}
+    >
+      {status.toLowerCase().replaceAll('_', ' ')}
+    </span>
+  );
+};
+
+const riskLevelsStylesMap: Record<RiskLevels, string> = {
+  [RiskLevels.LOW]: 'text-green-600 bg-green-100',
+  [RiskLevels.MEDIUM]: 'text-orange-600 bg-orange-100',
+  [RiskLevels.HIGH]: 'text-red-600 bg-red-100',
+};
+
+export const RiskLevelBadge: FC<{
+  level: RiskLevels;
+}> = ({ level }) => {
+  return (
+    <span
+      className={cn(
+        riskLevelsStylesMap[level],
+        'flex h-5 items-center justify-center rounded-full px-2 text-xs font-medium capitalize',
+      )}
+    >
+      {level.toLowerCase()}
+    </span>
   );
 };

@@ -1,8 +1,9 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import {
+  IDocument,
   IGetDocumentsParams,
   useGetDocumentsInfiniteScroll,
 } from 'entities/document';
@@ -10,6 +11,7 @@ import { FileText } from 'lucide-react';
 
 import { useTeamStore } from 'shared/store';
 
+import { DocumentDrawer } from './drawer';
 import { DocumentsListElement } from './element';
 
 interface IProps extends Pick<IGetDocumentsParams, 'tagsIds' | 'authorsIds'> {
@@ -24,6 +26,10 @@ export const DocumentsList: FC<IProps> = ({
   hideCheckbox,
 }) => {
   const { selectedTeam, tagsAndDocumentsFilters } = useTeamStore();
+  const [selectedDocument, setSelectedDocument] = useState<Omit<
+    IDocument,
+    'files'
+  > | null>(null);
 
   const { data: documentsData } = useGetDocumentsInfiniteScroll({
     page: 1,
@@ -54,8 +60,14 @@ export const DocumentsList: FC<IProps> = ({
           isLast={index + 1 === documents.length}
           document={document}
           key={document.id}
+          onRowClick={setSelectedDocument}
         />
       ))}
+      <DocumentDrawer
+        document={selectedDocument}
+        open={!!selectedDocument}
+        onClose={() => setSelectedDocument(null)}
+      />
     </>
   );
 };

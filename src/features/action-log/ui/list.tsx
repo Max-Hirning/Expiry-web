@@ -13,9 +13,10 @@ import { InfiniteScroll } from 'shared/ui';
 
 import { ActionLogItem } from './item';
 
-interface IProps extends Pick<IGetActionLogsParams, 'actorIds'> {}
+interface IProps
+  extends Pick<IGetActionLogsParams, 'actorIds' | 'documentIds'> {}
 
-export const ActionLogsList: FC<IProps> = ({ actorIds }) => {
+export const ActionLogsList: FC<IProps> = ({ actorIds, documentIds }) => {
   const { selectedTeam } = useTeamStore();
 
   const {
@@ -28,6 +29,7 @@ export const ActionLogsList: FC<IProps> = ({ actorIds }) => {
     teamId: selectedTeam?.id || '',
     perPage: 10,
     actorIds,
+    documentIds,
   });
   const actionLogs =
     actionLogsData?.pages.map(({ data }) => data.actionLogs).flat(1) || [];

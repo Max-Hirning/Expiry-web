@@ -24,12 +24,14 @@ interface IProps {
   hideCheckbox?: boolean;
   isLast: boolean;
   actorId?: string;
+  onRowClick?: (document: Omit<IDocument, 'files'>) => void;
 }
 
 export const DocumentsListElement: FC<IProps> = ({
   hideCheckbox,
   actorId,
   isLast,
+  onRowClick,
   document,
 }) => {
   const { selectedTeam, selectedDocumentIds, toggleSelectedDocumentId } =
@@ -42,14 +44,16 @@ export const DocumentsListElement: FC<IProps> = ({
   return (
     <div
       className={cn(
-        'flex items-center gap-4 border-b px-4 py-2',
+        'flex cursor-pointer items-center gap-4 border-b px-4 py-2 transition-colors hover:bg-gray-50',
         isLast && 'border-none',
       )}
+      onClick={() => onRowClick && onRowClick(document)}
     >
       <Checkbox
         className={cn('mr-8', hideCheckbox && 'hidden')}
         checked={selectedDocumentIds.has(document.id)}
         onCheckedChange={() => toggleSelectedDocumentId(document.id)}
+        onClick={event => event.stopPropagation()}
       />
       <p className="flex-1 text-sm">{document.name}</p>
       {actions.map(action => (
