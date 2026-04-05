@@ -16,7 +16,9 @@ import {
   UserStatusBadge,
 } from 'shared/ui';
 
-export const columns: ColumnDef<Omit<IUser, 'unReadNotifications'>>[] = [
+export const columns: ColumnDef<
+  Omit<IUser, 'unReadNotifications' | 'teamMembers'>
+>[] = [
   {
     id: 'select',
     header: ({ table }) => (

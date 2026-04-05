@@ -55,7 +55,7 @@ export const TeamMemberForm: FC<IProps> = ({
 
   return (
     <div className="flex w-full items-center gap-4">
-      <SearchSelect<Omit<IUser, 'unReadNotifications'>>
+      <SearchSelect<Omit<IUser, 'unReadNotifications' | 'teamMembers'>>
         {...restUsersData}
         data={users}
         setSearch={setSearchState}

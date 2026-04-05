@@ -1,3 +1,5 @@
+import { TeamMemberRoles } from 'shared/types';
+
 import { IAvatar, INotificationPreference, IUser } from './responses';
 
 export interface IInviteUser
@@ -17,4 +19,7 @@ export interface IUpdateUser
 export interface IUpdateUserPassword {
   oldPassword: string;
   password: string;
+}
+export interface IUpdateUserPosition {
+  role: TeamMemberRoles;
 }

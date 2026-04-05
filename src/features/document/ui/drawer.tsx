@@ -132,7 +132,10 @@ export const DocumentDrawer = ({
               />
             </dl>
 
-            <Tabs defaultValue="activity" className="px-4 py-3">
+            <Tabs
+              defaultValue="activity"
+              className="h-[calc(100%-119px-74px-60.8px)] px-4 py-3"
+            >
               <TabsList className="h-auto w-full items-center justify-start gap-1 rounded-xl bg-gray-100 p-1">
                 <TabsTrigger
                   value="activity"
@@ -157,18 +160,21 @@ export const DocumentDrawer = ({
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="activity">
+              <TabsContent value="activity" className="h-[calc(100%-36px-8px)]">
                 <ActionLogsList
                   documentIds={document ? [document?.id] : undefined}
                 />
               </TabsContent>
-              <TabsContent value="documents">
+              <TabsContent
+                value="documents"
+                className="h-[calc(100%-36px-8px)]"
+              >
                 <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
                   <FileText size={32} className="text-gray-300" />
                   No files yet
                 </div>
               </TabsContent>
-              <TabsContent value="chats">
+              <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
                 <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
                   <MessageSquare size={32} className="text-gray-300" />
                   No chats yet

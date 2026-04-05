@@ -16,7 +16,7 @@ export const UsersTable = () => {
   const { usersFilters } = useUserStore();
   const [selectedUser, setSelectedUser] = useState<Omit<
     IUser,
-    'unReadNotifications'
+    'unReadNotifications' | 'teamMembers'
   > | null>(null);
 
   const { data: usersData, isLoading } = useGetUsers({
@@ -56,11 +56,14 @@ export const UsersTable = () => {
   return (
     <>
       <DataTable columns={columns} data={users} onRowClick={setSelectedUser} />
-      <UserDrawer
-        user={selectedUser}
-        open={!!selectedUser}
-        onClose={() => setSelectedUser(null)}
-      />
+      {selectedTeam && (
+        <UserDrawer
+          user={selectedUser}
+          teamId={selectedTeam.id}
+          open={!!selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
     </>
   );
 };

@@ -45,12 +45,21 @@ export interface IUser {
   avatar: IAvatar | null;
   notificationPreferences: INotificationPreference;
   unReadNotifications: number;
+  teamMembers: Record<string, TeamMemberRoles>;
 }
 
 export interface IUserResponse {
   message: string;
   data: {
     user: IUser;
+  };
+}
+
+export interface IUserPositionResponse {
+  message: string;
+  data: {
+    id: string;
+    role: TeamMemberRoles;
   };
 }
 
@@ -66,6 +75,6 @@ export interface IUsersResponse {
   message: string;
   data: {
     pagination: IPaginationResponse;
-    users: Omit<IUser, 'unReadNotifications'>[];
+    users: Omit<IUser, 'unReadNotifications' | 'teamMembers'>[];
   };
 }

@@ -15,6 +15,7 @@ export enum UserStatuses {
 }
 
 export enum TeamMemberRoles {
+  OWNER = 'OWNER',
   ADMIN = 'ADMIN',
   STAFF = 'STAFF',
 }

@@ -31,7 +31,8 @@ export const UserStatusBadge: FC<{
 };
 
 const teamMemberRolesStylesMap: Record<TeamMemberRoles, string> = {
-  [TeamMemberRoles.ADMIN]: 'text-yellow-600 bg-yellow-100',
+  [TeamMemberRoles.OWNER]: 'text-yellow-600 bg-yellow-100',
+  [TeamMemberRoles.ADMIN]: 'text-blue-600 bg-blue-100',
   [TeamMemberRoles.STAFF]: 'text-green-600 bg-green-100',
 };
 

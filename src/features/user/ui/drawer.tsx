@@ -1,7 +1,8 @@
 'use client';
 
 import { format } from 'date-fns';
-import { IUser } from 'entities';
+import { IUser, useUpdateUserPosition } from 'entities';
+import { Permissions, usePermissions } from 'entities/auth';
 import {
   FileText,
   History,
@@ -12,6 +13,8 @@ import {
 
 import { ActionLogsList } from 'features/action-log';
 import { DocumentsList } from 'features/document';
+import { cn } from 'shared/lib';
+import { TeamMemberRoles } from 'shared/types';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,6 +22,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
   Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Sheet,
   SheetContent,
   SheetHeader,
@@ -33,8 +39,9 @@ import {
 } from 'shared/ui';
 
 interface UserDrawerProps {
-  user: Omit<IUser, 'unReadNotifications'> | null;
+  user: Omit<IUser, 'unReadNotifications' | 'teamMembers'> | null;
   open: boolean;
+  teamId: string;
   onClose: () => void;
 }
 
@@ -52,7 +59,19 @@ const DrawerRow = ({ label, value }: DrawerRowProps) => {
   );
 };
 
-export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
+export const UserDrawer = ({
+  user,
+  teamId,
+  open,
+  onClose,
+}: UserDrawerProps) => {
+  const { mutate: updateUserPosition, isPending: isUpdateUserPosition } =
+    useUpdateUserPosition();
+  const permissions = usePermissions({
+    permissions: [Permissions.UPDATE_USER_TEAM_POSITION],
+    teamId,
+  });
+
   return (
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
@@ -118,7 +137,54 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
                 label="Position"
                 value={
                   user.position ? (
-                    <TeamMemberRoleBadge role={user.position} />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          disabled={
+                            isUpdateUserPosition ||
+                            !permissions[Permissions.UPDATE_USER_TEAM_POSITION]
+                          }
+                          className="h-fit w-fit bg-transparent p-0"
+                        >
+                          <TeamMemberRoleBadge role={user.position} />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex w-fit flex-col items-center justify-center gap-2 p-2">
+                        {Object.values(TeamMemberRoles).map(teamMemberRole => {
+                          if (TeamMemberRoles.OWNER === teamMemberRole) {
+                            return null;
+                          }
+
+                          return (
+                            <Button
+                              key={teamMemberRole}
+                              onClick={() =>
+                                updateUserPosition({
+                                  userId: user.id,
+                                  teamId,
+                                  role: teamMemberRole,
+                                })
+                              }
+                              disabled={
+                                isUpdateUserPosition ||
+                                !permissions[
+                                  Permissions.UPDATE_USER_TEAM_POSITION
+                                ]
+                              }
+                              variant="ghost"
+                              className={cn(
+                                'h-fit w-fit cursor-pointer bg-transparent p-0',
+                                teamMemberRole === user.position &&
+                                  'cursor-not-allowed',
+                              )}
+                            >
+                              <TeamMemberRoleBadge role={teamMemberRole} />
+                            </Button>
+                          );
+                        })}
+                      </PopoverContent>
+                    </Popover>
                   ) : (
                     '—'
                   )
@@ -135,7 +201,10 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
               />
             </dl>
 
-            <Tabs defaultValue="activity" className="px-4 py-3">
+            <Tabs
+              defaultValue="activity"
+              className="h-[calc(100%-156px-82px-60.8px)] px-4 py-3"
+            >
               <TabsList className="h-auto w-full items-center justify-start gap-1 rounded-xl bg-gray-100 p-1">
                 <TabsTrigger
                   value="activity"
@@ -160,17 +229,20 @@ export const UserDrawer = ({ user, open, onClose }: UserDrawerProps) => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="activity">
+              <TabsContent value="activity" className="h-[calc(100%-36px-8px)]">
                 <ActionLogsList actorIds={user ? [user?.id] : undefined} />
               </TabsContent>
-              <TabsContent value="documents">
+              <TabsContent
+                value="documents"
+                className="h-[calc(100%-36px-8px)]"
+              >
                 <DocumentsList
                   hideCheckbox
                   actorId={user?.id || undefined}
                   authorsIds={user ? [user.id] : undefined}
                 />
               </TabsContent>
-              <TabsContent value="chats">
+              <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
                 <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
                   <MessageSquare size={32} className="text-gray-300" />
                   No chats yet

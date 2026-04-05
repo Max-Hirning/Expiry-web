@@ -18,3 +18,8 @@ export interface IGetUsersParams extends IPaginationParams {
 export interface IGetUserInvitation {
   invitationId: string;
 }
+
+export interface IUpdateUserPositionParams {
+  userId: string;
+  teamId: string;
+}
