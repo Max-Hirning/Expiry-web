@@ -1,6 +1,6 @@
-import { IPaginationParams } from 'shared/types';
+import { ICursorPaginationParams } from 'shared/types';
 
-export interface IGetActionLogsParams extends IPaginationParams {
+export interface IGetActionLogsParams extends ICursorPaginationParams {
   actorIds?: string[];
   documentIds?: string[];
   teamId: string;

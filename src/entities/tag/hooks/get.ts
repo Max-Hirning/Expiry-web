@@ -15,10 +15,11 @@ export const useGetTags = (query: IGetTagsParams) => {
 
 export const useGetTagsInfiniteScroll = (query: IGetTagsParams) => {
   return useInfiniteQuery({
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     queryKey: [QueryKeys.GET_INFINITE_TAGS, query],
-    queryFn: ({ pageParam }) => getTags({ ...query, page: pageParam }),
-    getNextPageParam: lastPage => lastPage.data.pagination.nextPage,
+    queryFn: ({ pageParam }) => getTags({ ...query, cursor: pageParam }),
+    getNextPageParam: lastPage =>
+      lastPage.data.pagination.nextCursor ?? undefined,
   });
 };
 

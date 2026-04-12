@@ -69,3 +69,8 @@ export enum ActionLogTypes {
   UPDATE_DOCUMENT = 'UPDATE_DOCUMENT',
   DELETE_DOCUMENT = 'DELETE_DOCUMENT',
 }
+
+export enum ChatMemberStatus {
+  ACTIVE = 'ACTIVE',
+  DELETED = 'DELETED',
+}

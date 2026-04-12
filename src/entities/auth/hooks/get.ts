@@ -34,7 +34,7 @@ export const usePermissions = ({
 
   if (permissions.includes(Permissions.UPDATE_USER_TEAM_POSITION)) {
     allowedPermission[Permissions.UPDATE_USER_TEAM_POSITION] =
-      user?.data.user.teamMembers[teamId] === TeamMemberRoles.OWNER;
+      user?.data?.user?.teamMembers?.[teamId] === TeamMemberRoles.OWNER;
   }
 
   return allowedPermission;

@@ -1,13 +1,8 @@
-export interface IPaginationResponse {
-  perPage: number;
-  page: number;
-  prevPage: number | null;
-  nextPage: number | null;
-  total: number;
-  totalPages: number;
+export interface ICursorPaginationParams {
+  cursor?: string;
+  limit: number;
 }
 
-export interface IPaginationParams {
-  perPage: number;
-  page: number;
+export interface ICursorPaginationResponse {
+  nextCursor: string | null;
 }

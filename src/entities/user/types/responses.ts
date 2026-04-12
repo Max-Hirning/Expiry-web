@@ -1,5 +1,5 @@
 import {
-  IPaginationResponse,
+  ICursorPaginationResponse,
   MfaTypes,
   TeamMemberRoles,
   UserRoles,
@@ -74,7 +74,7 @@ export interface IUpdateUserResponse {
 export interface IUsersResponse {
   message: string;
   data: {
-    pagination: IPaginationResponse;
+    pagination: ICursorPaginationResponse;
     users: Omit<IUser, 'unReadNotifications' | 'teamMembers'>[];
   };
 }

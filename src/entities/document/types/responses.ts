@@ -1,7 +1,9 @@
 import {
   ActionLogTypes,
   DocumentStatuses,
-  IPaginationResponse,
+  ExtractedFieldSource,
+  ExtractedFieldTypes,
+  ICursorPaginationResponse,
   RiskLevels,
 } from 'shared/types';
 
@@ -17,7 +19,39 @@ export interface IFile {
   documentId: string;
 }
 
-export interface IDocument {
+export interface IDocumentExtractedField {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  type: ExtractedFieldTypes;
+  value: string;
+  confidence: number;
+  source: ExtractedFieldSource;
+  documentId: string;
+}
+
+export interface ILastChatMessage {
+  id: string;
+  message: string;
+  createdAt: string;
+  author: {
+    id: string;
+    userFullName: string;
+    userAvatarUrl: string | null;
+  };
+}
+
+export interface IDocumentChat {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  lastMessage: ILastChatMessage | null;
+  unreadCount: number;
+  activeMemberCount: number;
+}
+
+export interface IDocumentListItem {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -25,25 +59,37 @@ export interface IDocument {
   name: string;
   expiresAt: string | null;
   riskLevel: RiskLevels | null;
-  files: IFile[];
   actions: Record<string, ActionLogTypes[]>;
+  chat: IDocumentChat | null;
 }
 
-export interface IDocumentResponse {
-  message: string;
-  data: Omit<IDocument, 'actions'>;
+export interface IDocument extends IDocumentListItem {
+  documentExtractedFields: IDocumentExtractedField[];
+  files: IFile[];
+  tags: string[];
 }
-
-export interface ICreateDocumentResponse extends IDocumentResponse {
-  uploadUrl: string | null;
-}
-
-export interface IUpdateDocumentResponse extends ICreateDocumentResponse {}
 
 export interface IDocumentsResponse {
   message: string;
   data: {
-    pagination: IPaginationResponse;
-    documents: Omit<IDocument, 'files'>[];
+    pagination: ICursorPaginationResponse;
+    documents: IDocumentListItem[];
   };
 }
+
+export interface IDocumentResponse {
+  message: string;
+  data: {
+    document: IDocument;
+  };
+}
+
+export interface ICreateDocumentResponse {
+  message: string;
+  data: {
+    document: IDocument;
+    filesToUpload: Array<{ id: string; url: string }>;
+  };
+}
+
+export interface IUpdateDocumentResponse extends ICreateDocumentResponse {}

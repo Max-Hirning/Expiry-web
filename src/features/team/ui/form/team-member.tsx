@@ -42,8 +42,7 @@ export const TeamMemberForm: FC<IProps> = ({
     isLoading,
     ...restUsersData
   } = useGetUsersInfiniteScroll({
-    page: 1,
-    perPage: 15,
+    limit: 15,
     search: searchValue,
     omitUsersIds: value
       .map(({ userId }) => userId)

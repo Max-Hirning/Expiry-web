@@ -14,15 +14,17 @@ export const useGetUsers = (query: IGetUsersParams) => {
 
 export const useGetUsersInfiniteScroll = (query: IGetUsersParams) => {
   return useInfiniteQuery({
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     queryKey: [QueryKeys.GET_INFINITE_USERS, query],
-    queryFn: ({ pageParam }) => getUsers({ ...query, page: pageParam }),
-    getNextPageParam: lastPage => lastPage.data.pagination.nextPage,
+    queryFn: ({ pageParam }) => getUsers({ ...query, cursor: pageParam }),
+    getNextPageParam: lastPage =>
+      lastPage.data.pagination.nextCursor ?? undefined,
   });
 };
 
 export const useGetUser = (userId: string) => {
   return useQuery({
+    enabled: !!userId,
     queryKey: [QueryKeys.GET_USERS, userId],
     queryFn: ({ signal }) => getUser(userId, signal),
   });

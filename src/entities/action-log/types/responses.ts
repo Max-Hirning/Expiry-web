@@ -1,4 +1,4 @@
-import { ActionLogTypes, IPaginationResponse } from 'shared/types';
+import { ActionLogTypes, ICursorPaginationResponse } from 'shared/types';
 
 export interface IActionLog {
   id: string;
@@ -18,7 +18,7 @@ export interface IActionLog {
 export interface IActionLogsResponse {
   message: string;
   data: {
-    pagination: IPaginationResponse;
+    pagination: ICursorPaginationResponse;
     actionLogs: IActionLog[];
   };
 }

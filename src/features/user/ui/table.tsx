@@ -20,8 +20,7 @@ export const UsersTable = () => {
   > | null>(null);
 
   const { data: usersData, isLoading } = useGetUsers({
-    page: 1,
-    perPage: 10,
+    limit: 10,
     ...(usersFilters || {}),
     teamId: selectedTeam?.id || '',
   });

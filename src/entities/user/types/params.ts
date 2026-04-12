@@ -1,8 +1,8 @@
-import { IPaginationParams, UserRoles, UserStatuses } from 'shared/types';
+import { ICursorPaginationParams, UserRoles, UserStatuses } from 'shared/types';
 
 import { IUser } from './responses';
 
-export interface IGetUsersParams extends IPaginationParams {
+export interface IGetUsersParams extends ICursorPaginationParams {
   search?: string;
   teamId?: string;
   omitUsersIds?: string[];

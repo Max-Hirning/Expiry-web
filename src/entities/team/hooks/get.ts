@@ -14,10 +14,11 @@ export const useGetTeams = (query: IGetTeamsParams) => {
 
 export const useGetTeamsInfiniteScroll = (query: IGetTeamsParams) => {
   return useInfiniteQuery({
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     queryKey: [QueryKeys.GET_INFINITE_TEAMS, query],
-    queryFn: ({ pageParam }) => getTeams({ ...query, page: pageParam }),
-    getNextPageParam: lastPage => lastPage.data.pagination.nextPage,
+    queryFn: ({ pageParam }) => getTeams({ ...query, cursor: pageParam }),
+    getNextPageParam: lastPage =>
+      lastPage.data.pagination.nextCursor ?? undefined,
   });
 };
 

@@ -1,6 +1,6 @@
 import { IGetDocumentsParams } from 'entities/document';
 
-import { IPaginationParams } from 'shared/types';
+import { ICursorPaginationParams } from 'shared/types';
 
 import { ITag } from './responses';
 
@@ -9,7 +9,7 @@ export interface IGetTagsParams
       IGetDocumentsParams,
       'expiresAtDateRange' | 'statuses' | 'riskLevel'
     >,
-    IPaginationParams {
+    ICursorPaginationParams {
   search?: string;
   teamId: string;
   sortOrder?: 'asc' | 'desc';

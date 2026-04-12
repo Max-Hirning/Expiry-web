@@ -4,6 +4,7 @@ import { FC, useState } from 'react';
 
 import {
   IDocument,
+  IDocumentListItem,
   IGetDocumentsParams,
   useGetDocumentsInfiniteScroll,
 } from 'entities/document';
@@ -26,16 +27,13 @@ export const DocumentsList: FC<IProps> = ({
   hideCheckbox,
 }) => {
   const { selectedTeam, tagsAndDocumentsFilters } = useTeamStore();
-  const [selectedDocument, setSelectedDocument] = useState<Omit<
-    IDocument,
-    'files'
-  > | null>(null);
+  const [selectedDocument, setSelectedDocument] =
+    useState<IDocumentListItem | null>(null);
 
   const { data: documentsData } = useGetDocumentsInfiniteScroll({
-    page: 1,
+    limit: 10,
     tagsIds,
     authorsIds,
-    perPage: 10,
     teamId: selectedTeam?.id || '',
     ...(tagsAndDocumentsFilters || {}),
   });

@@ -15,10 +15,11 @@ export const useGetActionLogs = (query: IGetActionLogsParams) => {
 
 export const useGetActionLogsInfiniteScroll = (query: IGetActionLogsParams) => {
   return useInfiniteQuery({
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     enabled: !!query.teamId,
     queryKey: [QueryKeys.GET_INFINITE_ACTION_LOGS, query],
-    queryFn: ({ pageParam }) => getActionLogs({ ...query, page: pageParam }),
-    getNextPageParam: lastPage => lastPage.data.pagination.nextPage,
+    queryFn: ({ pageParam }) => getActionLogs({ ...query, cursor: pageParam }),
+    getNextPageParam: lastPage =>
+      lastPage.data.pagination.nextCursor ?? undefined,
   });
 };

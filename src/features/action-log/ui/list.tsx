@@ -25,9 +25,8 @@ export const ActionLogsList: FC<IProps> = ({ actorIds, documentIds }) => {
     hasNextPage,
     isFetchingNextPage,
   } = useGetActionLogsInfiniteScroll({
-    page: 1,
+    limit: 10,
     teamId: selectedTeam?.id || '',
-    perPage: 10,
     actorIds,
     documentIds,
   });

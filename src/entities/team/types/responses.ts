@@ -1,4 +1,4 @@
-import { IPaginationResponse, TeamMemberRoles } from 'shared/types';
+import { ICursorPaginationResponse, TeamMemberRoles } from 'shared/types';
 
 export interface ITeamStats {
   id: string;
@@ -64,7 +64,7 @@ export interface IUpdateTeamResponse extends ICreateTeamResponse {}
 export interface ITeamsResponse {
   message: string;
   data: {
-    pagination: IPaginationResponse;
+    pagination: ICursorPaginationResponse;
     teams: ITeam[];
   };
 }

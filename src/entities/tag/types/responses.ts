@@ -1,4 +1,4 @@
-import { IPaginationResponse } from 'shared/types';
+import { ICursorPaginationResponse } from 'shared/types';
 
 export interface ITag {
   id: string;
@@ -16,7 +16,7 @@ export interface ITagResponse {
 export interface ITagsResponse {
   message: string;
   data: {
-    pagination: IPaginationResponse;
+    pagination: ICursorPaginationResponse;
     tags: ITag[];
   };
 }

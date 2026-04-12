@@ -1,7 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
-import { IDocument } from 'entities/document';
+import { IDocument, IDocumentListItem } from 'entities/document';
 import {
   FileText,
   History,
@@ -31,7 +31,7 @@ import {
 } from 'shared/ui';
 
 interface DocumentDrawerProps {
-  document: Omit<IDocument, 'files'> | null;
+  document: IDocumentListItem | null;
   open: boolean;
   onClose: () => void;
 }

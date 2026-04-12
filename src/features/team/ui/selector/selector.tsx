@@ -20,8 +20,7 @@ export const TeamSelector = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useGetTeamsInfiniteScroll({
-    perPage: 10,
-    page: 1,
+    limit: 10,
     sortField: 'createdAt',
     sortOrder: 'desc',
   });

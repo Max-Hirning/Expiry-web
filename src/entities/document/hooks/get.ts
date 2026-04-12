@@ -15,10 +15,11 @@ export const useGetDocuments = (query: IGetDocumentsParams) => {
 
 export const useGetDocumentsInfiniteScroll = (query: IGetDocumentsParams) => {
   return useInfiniteQuery({
-    initialPageParam: 1,
+    initialPageParam: undefined as string | undefined,
     queryKey: [QueryKeys.GET_INFINITE_DOCUMENTS, query],
-    queryFn: ({ pageParam }) => getDocuments({ ...query, page: pageParam }),
-    getNextPageParam: lastPage => lastPage.data.pagination.nextPage,
+    queryFn: ({ pageParam }) => getDocuments({ ...query, cursor: pageParam }),
+    getNextPageParam: lastPage =>
+      lastPage.data.pagination.nextCursor ?? undefined,
   });
 };
 

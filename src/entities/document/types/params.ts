@@ -1,8 +1,10 @@
-import { DocumentStatuses, IPaginationParams, RiskLevels } from 'shared/types';
+import {
+  DocumentStatuses,
+  ICursorPaginationParams,
+  RiskLevels,
+} from 'shared/types';
 
-import { IDocument } from './responses';
-
-export interface IGetDocumentsParams extends IPaginationParams {
+export interface IGetDocumentsParams extends ICursorPaginationParams {
   search?: string;
   teamId: string;
   authorsIds?: string[];
@@ -10,7 +12,7 @@ export interface IGetDocumentsParams extends IPaginationParams {
   expiresAtDateRange?: [string, string];
   riskLevel?: RiskLevels[];
   sortOrder?: 'asc' | 'desc';
-  sortField?: keyof Pick<IDocument, 'name' | 'createdAt'>;
+  sortField?: 'name' | 'createdAt';
   tagsIds?: string[];
 }
 

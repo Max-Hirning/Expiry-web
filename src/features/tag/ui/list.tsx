@@ -31,8 +31,7 @@ export const TagsList = () => {
   } = useTeamStore();
 
   const { data: tagsData, isLoading } = useGetTagsInfiniteScroll({
-    page: 1,
-    perPage: 10,
+    limit: 10,
     teamId: selectedTeam?.id || '',
     ...(tagsAndDocumentsFilters || {}),
   });

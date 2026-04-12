@@ -2,7 +2,7 @@
 
 import { FC, useState } from 'react';
 
-import { IDocument } from 'entities/document';
+import { IDocument, IDocumentListItem } from 'entities/document';
 import { EllipsisVertical, Pencil, Trash, Upload } from 'lucide-react';
 
 import { cn } from 'shared/lib';
@@ -20,11 +20,11 @@ import {
 import { DocumentDeleteAlert } from './alert';
 
 interface IProps {
-  document: Omit<IDocument, 'files'>;
+  document: IDocumentListItem;
   hideCheckbox?: boolean;
   isLast: boolean;
   actorId?: string;
-  onRowClick?: (document: Omit<IDocument, 'files'>) => void;
+  onRowClick?: (document: IDocumentListItem) => void;
 }
 
 export const DocumentsListElement: FC<IProps> = ({

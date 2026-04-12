@@ -12,8 +12,7 @@ export const UsersTableFilters = () => {
   const { selectedTeam } = useTeamStore();
 
   const { data: usersData, isLoading } = useGetUsers({
-    page: 1,
-    perPage: 10,
+    limit: 10,
     teamId: selectedTeam?.id || '',
   });
   const users = usersData?.data.users || [];
