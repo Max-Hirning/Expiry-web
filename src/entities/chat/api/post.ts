@@ -1,8 +1,6 @@
 import { api } from 'shared/lib';
 
 import {
-  IGetChatsParams,
-  IGetMessagesParams,
   IMarkMessagesRead,
   IMarkMessagesReadResponse,
   ISendMessage,

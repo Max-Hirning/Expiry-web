@@ -3,7 +3,6 @@
 import { FC, useState } from 'react';
 
 import {
-  IDocument,
   IDocumentListItem,
   IGetDocumentsParams,
   useGetDocumentsInfiniteScroll,
