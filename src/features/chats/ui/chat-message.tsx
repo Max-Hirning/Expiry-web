@@ -60,6 +60,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
             <p className="text-sm">{message.message}</p>
           </div>
           <div className="flex items-center gap-1">
+            {message.lastEditedAt && (
+              <span className="text-xs italic text-gray-400">edited</span>
+            )}
             <span className="text-xs text-gray-400">{timestamp}</span>
             <CheckCheck
               size={14}
@@ -112,6 +115,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
         <div className="max-w-xs rounded-2xl bg-gray-100 px-4 py-2">
           <p className="text-sm text-gray-900">{message.message}</p>
         </div>
+        {message.lastEditedAt && (
+          <span className="text-xs italic text-gray-400">edited</span>
+        )}
       </div>
     </div>
   );

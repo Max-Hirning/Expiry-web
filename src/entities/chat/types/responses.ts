@@ -24,6 +24,7 @@ export interface IChatMessage {
   id: string;
   createdAt: string;
   updatedAt: string;
+  lastEditedAt: string | null;
   message: string;
   parentMessageId: string | null;
   authorId: string;
