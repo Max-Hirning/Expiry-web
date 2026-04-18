@@ -25,6 +25,71 @@ export const useChatSocket = ({ chatId, teamId }: UseChatSocketParams) => {
       setIsConnected(false);
     };
 
+    const handleUpdatedMessage = (message: IChatMessage) => {
+      queryClient.setQueriesData<InfiniteData<IMessagesResponse>>(
+        {
+          queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
+          predicate: query => {
+            const key = query.queryKey as [QueryKeys, { chatId?: string }];
+
+            return key[1]?.chatId === chatId;
+          },
+        },
+        old => {
+          if (!old?.pages.length) {
+            return old;
+          }
+
+          return {
+            ...old,
+            pages: old.pages.map(page => ({
+              ...page,
+              data: {
+                ...page.data,
+                messages: page.data.messages.map(m =>
+                  m.id === message.id ? message : m,
+                ),
+              },
+            })),
+          };
+        },
+      );
+    };
+
+    const handleDeletedMessage = (message: IChatMessage) => {
+      queryClient.setQueriesData<InfiniteData<IMessagesResponse>>(
+        {
+          queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
+          predicate: query => {
+            const key = query.queryKey as [QueryKeys, { chatId?: string }];
+
+            return key[1]?.chatId === chatId;
+          },
+        },
+        old => {
+          if (!old?.pages.length) {
+            return old;
+          }
+
+          return {
+            ...old,
+            pages: old.pages.map(page => ({
+              ...page,
+              data: {
+                ...page.data,
+                messages: page.data.messages.filter(m => m.id !== message.id),
+              },
+            })),
+          };
+        },
+      );
+
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_CHATS] });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.GET_INFINITE_CHATS],
+      });
+    };
+
     const handleNewMessage = (message: IChatMessage) => {
       queryClient.setQueriesData<InfiniteData<IMessagesResponse>>(
         {
@@ -73,6 +138,8 @@ export const useChatSocket = ({ chatId, teamId }: UseChatSocketParams) => {
 
     socket.emit('chat:join', { chatId, teamId });
     socket.on('chat:message:new', handleNewMessage);
+    socket.on('chat:message:updated', handleUpdatedMessage);
+    socket.on('chat:message:deleted', handleDeletedMessage);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
@@ -81,6 +148,8 @@ export const useChatSocket = ({ chatId, teamId }: UseChatSocketParams) => {
       socket.off('disconnect', onDisconnect);
       socket.emit('chat:leave', { chatId });
       socket.off('chat:message:new', handleNewMessage);
+      socket.off('chat:message:updated', handleUpdatedMessage);
+      socket.off('chat:message:deleted', handleDeletedMessage);
     };
   }, [socket, chatId, teamId, queryClient]);
 };
