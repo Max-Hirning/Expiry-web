@@ -4,12 +4,14 @@ import { FC, useEffect, useRef, useState } from 'react';
 
 import { useSession } from 'entities/auth';
 import {
+  IChatMessage,
   useChatSocket,
+  useEditMessage,
   useGetChat,
   useGetMessagesInfiniteScroll,
   useSendMessage,
 } from 'entities/chat';
-import { LoaderCircle, Send } from 'lucide-react';
+import { LoaderCircle, Send, X } from 'lucide-react';
 
 import { Button, Input, ScrollArea } from 'shared/ui';
 
@@ -22,6 +24,9 @@ interface ChatWindowProps {
 
 export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
   const [messageInput, setMessageInput] = useState('');
+  const [editingMessage, setEditingMessage] = useState<IChatMessage | null>(
+    null,
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: user } = useSession();
@@ -38,6 +43,7 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
     limit: 15,
   });
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
+  const { mutate: editMessage, isPending: isEditing } = useEditMessage();
 
   useChatSocket({ chatId, teamId });
 
@@ -57,8 +63,37 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
     scrollToBottom();
   }, [messages.length]);
 
+  const handleEditStart = (message: IChatMessage) => {
+    setEditingMessage(message);
+    setMessageInput(message.message);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessage(null);
+    setMessageInput('');
+  };
+
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentMember || isSending) {
+    if (!messageInput.trim() || !currentMember || isSending || isEditing) {
+      return;
+    }
+
+    if (editingMessage) {
+      editMessage(
+        {
+          teamId,
+          chatId,
+          messageId: editingMessage.id,
+          message: messageInput,
+        },
+        {
+          onSuccess: () => {
+            setEditingMessage(null);
+            setMessageInput('');
+          },
+        },
+      );
+
       return;
     }
 
@@ -76,7 +111,7 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
     );
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       handleSendMessage();
@@ -90,6 +125,8 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
       </div>
     );
   }
+
+  const isPending = isSending || isEditing;
 
   return (
     <div className="flex h-full flex-col gap-0">
@@ -127,6 +164,9 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
                   message={message}
                   author={author}
                   isOwn={isOwn}
+                  teamId={teamId}
+                  chatId={chatId}
+                  onEditStart={handleEditStart}
                 />
               );
             })
@@ -135,22 +175,38 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
         </div>
       </ScrollArea>
 
+      {editingMessage && (
+        <div className="flex items-center justify-between border-t bg-gray-50 px-4 py-2">
+          <div className="flex min-w-0 flex-col">
+            <span className="text-xs font-medium text-blue-500">
+              Editing message
+            </span>
+            <span className="truncate text-sm text-gray-600">
+              {editingMessage.message}
+            </span>
+          </div>
+          <Button variant="ghost" size="icon" onClick={handleCancelEdit}>
+            <X size={14} />
+          </Button>
+        </div>
+      )}
+
       <div className="flex w-full gap-2 border-t px-4 py-4">
         <Input
           type="text"
           placeholder="Type a message..."
           value={messageInput}
           onChange={event => setMessageInput(event.target.value)}
-          onKeyPress={handleKeyPress}
-          disabled={isSending || !currentMember}
+          onKeyDown={handleKeyDown}
+          disabled={isPending || !currentMember}
           containerClassName="flex-1"
         />
         <Button
           onClick={handleSendMessage}
-          disabled={!messageInput.trim() || isSending || !currentMember}
+          disabled={!messageInput.trim() || isPending || !currentMember}
           size="icon"
         >
-          {isSending ? (
+          {isPending ? (
             <LoaderCircle size={16} className="animate-spin" />
           ) : (
             <Send size={16} />

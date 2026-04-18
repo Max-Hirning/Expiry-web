@@ -2,16 +2,27 @@
 
 import { FC } from 'react';
 
-import { format } from 'date-fns';
-import { IChatMember, IChatMessage } from 'entities/chat';
+import { differenceInMinutes, format, parseISO } from 'date-fns';
+import { IChatMember, IChatMessage, useDeleteMessage } from 'entities/chat';
 import { CheckCheck } from 'lucide-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from 'shared/ui';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from 'shared/ui';
 
 interface ChatMessageProps {
   message: IChatMessage;
   author: IChatMember | undefined;
   isOwn: boolean;
+  teamId: string;
+  chatId: string;
+  onEditStart: (message: IChatMessage) => void;
 }
 
 const getInitials = (name: string) => {
@@ -27,13 +38,22 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   message,
   author,
   isOwn,
+  teamId,
+  chatId,
+  onEditStart,
 }) => {
   const timestamp = format(new Date(message.createdAt), 'h:mma');
+  const { mutate: deleteMessage } = useDeleteMessage();
+
+  const MESSAGE_EDIT_WINDOW_MINUTES = 5;
+  const hasSeen = (message as any).seenBy?.length > 0;
+  const canModify =
+    !hasSeen &&
+    differenceInMinutes(new Date(), parseISO(message.updatedAt)) <
+      MESSAGE_EDIT_WINDOW_MINUTES;
 
   if (isOwn) {
-    const hasSeen = (message as any).seenBy?.length > 0;
-
-    return (
+    const bubble = (
       <div className="flex justify-end gap-3">
         <div className="flex flex-col items-end gap-1">
           <div className="max-w-xs rounded-2xl bg-blue-500 px-4 py-2 text-white">
@@ -48,6 +68,29 @@ export const ChatMessage: FC<ChatMessageProps> = ({
           </div>
         </div>
       </div>
+    );
+
+    if (!canModify) {
+      return bubble;
+    }
+
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger asChild>{bubble}</ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem onClick={() => onEditStart(message)}>
+            Edit
+          </ContextMenuItem>
+          <ContextMenuItem
+            className="text-red-500 focus:text-red-500"
+            onClick={() =>
+              deleteMessage({ teamId, chatId, messageId: message.id })
+            }
+          >
+            Delete
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
     );
   }
 
