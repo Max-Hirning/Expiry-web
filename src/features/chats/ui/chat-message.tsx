@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 import { differenceInMinutes, format, parseISO } from 'date-fns';
 import { IChatMember, IChatMessage, useDeleteMessage } from 'entities/chat';
@@ -23,6 +23,7 @@ interface ChatMessageProps {
   teamId: string;
   chatId: string;
   onEditStart: (message: IChatMessage) => void;
+  onSeen?: (id: string) => void;
 }
 
 const getInitials = (name: string) => {
@@ -41,12 +42,34 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   teamId,
   chatId,
   onEditStart,
+  onSeen,
 }) => {
   const timestamp = format(new Date(message.createdAt), 'h:mma');
   const { mutate: deleteMessage } = useDeleteMessage();
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOwn || !onSeen || !messageRef.current) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onSeen(message.id);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(messageRef.current);
+
+    return () => observer.disconnect();
+  }, [isOwn, message.id, onSeen]);
 
   const MESSAGE_EDIT_WINDOW_MINUTES = 5;
-  const hasSeen = (message as any).seenBy?.length > 0;
+  const hasSeen = Object.keys(message.chatMessageReadStatuses).length > 0;
   const canModify =
     !hasSeen &&
     differenceInMinutes(new Date(), parseISO(message.updatedAt)) <
@@ -98,7 +121,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   }
 
   return (
-    <div className="flex gap-3">
+    <div ref={messageRef} className="flex gap-3">
       <Avatar className="mt-1 size-8 shrink-0">
         <AvatarImage src={author?.userAvatarUrl || undefined} />
         <AvatarFallback className="text-xs">

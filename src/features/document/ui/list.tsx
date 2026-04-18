@@ -63,6 +63,7 @@ export const DocumentsList: FC<IProps> = ({
       <DocumentDrawer
         document={selectedDocument}
         open={!!selectedDocument}
+        teamId={selectedTeam?.id || ''}
         onClose={() => setSelectedDocument(null)}
       />
     </>

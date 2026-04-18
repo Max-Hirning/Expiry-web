@@ -1,6 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
+import { useGetChat } from 'entities/chat';
 import { IDocumentListItem } from 'entities/document';
 import {
   FileText,
@@ -35,6 +36,7 @@ import {
 interface DocumentDrawerProps {
   document: IDocumentListItem | null;
   open: boolean;
+  teamId: string;
   onClose: () => void;
 }
 
@@ -56,8 +58,15 @@ export const DocumentDrawer = ({
   document,
   open,
   onClose,
+  teamId,
 }: DocumentDrawerProps) => {
   const { selectedTeam } = useTeamStore();
+  const { data: chatData } = useGetChat({
+    chatId: document?.chat?.id || '',
+    teamId,
+  });
+
+  const chat = chatData?.data.chat || document?.chat;
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -155,16 +164,16 @@ export const DocumentDrawer = ({
                   <FileText size={16} />
                   Files
                 </TabsTrigger>
-                {document.chat && (
+                {chat && (
                   <TabsTrigger
                     value="chats"
                     className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
                   >
                     <MessageSquare size={16} />
-                    {document.chat.name}
-                    {document.chat.unreadCount ? (
+                    {chat.name}
+                    {chat.unreadCount ? (
                       <span className="ml-1 rounded-full bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
-                        {document.chat.unreadCount}
+                        {chat.unreadCount}
                       </span>
                     ) : null}
                   </TabsTrigger>

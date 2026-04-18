@@ -9,8 +9,10 @@ import {
   useEditMessage,
   useGetChat,
   useGetMessagesInfiniteScroll,
+  useMarkMessagesRead,
   useSendMessage,
 } from 'entities/chat';
+import debounce from 'lodash/debounce';
 import { LoaderCircle, Send, X } from 'lucide-react';
 
 import { Button, Input, ScrollArea } from 'shared/ui';
@@ -28,6 +30,7 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
     null,
   );
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const seenIdsRef = useRef<Set<string>>(new Set());
 
   const { data: user } = useSession();
   const { data: chatData } = useGetChat({ teamId, chatId });
@@ -44,6 +47,12 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
   });
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
   const { mutate: editMessage, isPending: isEditing } = useEditMessage();
+  const { mutate: markMessagesRead } = useMarkMessagesRead();
+  const debouncedFlush = useRef(
+    debounce((ids: string[], tId: string, cId: string) => {
+      markMessagesRead({ teamId: tId, chatId: cId, messageIds: ids });
+    }, 1500),
+  );
 
   useChatSocket({ chatId, teamId });
 
@@ -62,6 +71,17 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages.length]);
+
+  useEffect(() => {
+    const flush = debouncedFlush.current;
+
+    return () => flush.cancel();
+  }, []);
+
+  const handleMessageSeen = (id: string) => {
+    seenIdsRef.current.add(id);
+    debouncedFlush.current([...seenIdsRef.current], teamId, chatId);
+  };
 
   const handleEditStart = (message: IChatMessage) => {
     setEditingMessage(message);
@@ -167,6 +187,11 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
                   teamId={teamId}
                   chatId={chatId}
                   onEditStart={handleEditStart}
+                  onSeen={
+                    !isOwn && !message.chatMessageReadStatuses[userId ?? '']
+                      ? handleMessageSeen
+                      : undefined
+                  }
                 />
               );
             })

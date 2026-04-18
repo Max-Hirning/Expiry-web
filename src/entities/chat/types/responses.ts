@@ -6,6 +6,7 @@ export interface IChat {
   id: string;
   createdAt: string;
   updatedAt: string;
+  unreadCount: number;
   name: string;
 }
 
@@ -29,6 +30,7 @@ export interface IChatMessage {
   parentMessageId: string | null;
   authorId: string;
   chatId: string;
+  chatMessageReadStatuses: Record<string, IChatMessageReadStatusEntry>;
 }
 
 export interface IChatMessageReadStatus {
@@ -36,6 +38,11 @@ export interface IChatMessageReadStatus {
   chatMessageId: string;
   readById: string;
   createdAt: string;
+}
+
+export interface IChatMessageReadStatusEntry {
+  createdAt: string;
+  readBy: IChatMember;
 }
 
 export interface IChatsResponse {

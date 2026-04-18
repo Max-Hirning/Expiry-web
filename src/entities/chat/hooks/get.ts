@@ -27,7 +27,7 @@ export const useGetChatsInfiniteScroll = (query: IGetChatsParams) => {
 export const useGetChat = (params: IGetChatParams) => {
   return useQuery({
     enabled: !!(params.teamId && params.chatId),
-    queryKey: [QueryKeys.GET_CHAT, params],
+    queryKey: [QueryKeys.GET_CHATS, params],
     queryFn: ({ signal }) => getChat(params, signal),
   });
 };
