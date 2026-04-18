@@ -11,7 +11,7 @@ export const editMessage = async (
   }: IEditMessage & { teamId: string; chatId: string; messageId: string },
   signal?: AbortSignal,
 ): Promise<IEditMessageResponse> => {
-  const response = await api.patch(
+  const response = await api.put(
     `/chats/${teamId}/${chatId}/messages/${messageId}`,
     payload,
     { signal },

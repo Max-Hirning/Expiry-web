@@ -1,7 +1,8 @@
 'use client';
 
 import { format } from 'date-fns';
-import { IDocument, IDocumentListItem } from 'entities/document';
+import { useGetChat } from 'entities/chat';
+import { IDocumentListItem } from 'entities/document';
 import {
   FileText,
   History,
@@ -11,6 +12,8 @@ import {
 } from 'lucide-react';
 
 import { ActionLogsList } from 'features/action-log';
+import { ChatWindow } from 'features/chats';
+import { useTeamStore } from 'shared/store';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,6 +36,7 @@ import {
 interface DocumentDrawerProps {
   document: IDocumentListItem | null;
   open: boolean;
+  teamId: string;
   onClose: () => void;
 }
 
@@ -54,7 +58,16 @@ export const DocumentDrawer = ({
   document,
   open,
   onClose,
+  teamId,
 }: DocumentDrawerProps) => {
+  const { selectedTeam } = useTeamStore();
+  const { data: chatData } = useGetChat({
+    chatId: document?.chat?.id || '',
+    teamId,
+  });
+
+  const chat = chatData?.data.chat || document?.chat;
+
   return (
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
@@ -151,13 +164,20 @@ export const DocumentDrawer = ({
                   <FileText size={16} />
                   Files
                 </TabsTrigger>
-                <TabsTrigger
-                  value="chats"
-                  className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
-                >
-                  <MessageSquare size={16} />
-                  Chats
-                </TabsTrigger>
+                {chat && (
+                  <TabsTrigger
+                    value="chats"
+                    className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                  >
+                    <MessageSquare size={16} />
+                    {chat.name}
+                    {chat.unreadCount ? (
+                      <span className="ml-1 rounded-full bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
+                        {chat.unreadCount}
+                      </span>
+                    ) : null}
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <TabsContent value="activity" className="h-[calc(100%-36px-8px)]">
@@ -174,12 +194,14 @@ export const DocumentDrawer = ({
                   No files yet
                 </div>
               </TabsContent>
-              <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
-                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <MessageSquare size={32} className="text-gray-300" />
-                  No chats yet
-                </div>
-              </TabsContent>
+              {document.chat && (
+                <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
+                  <ChatWindow
+                    chatId={document.chat.id}
+                    teamId={selectedTeam?.id ?? ''}
+                  />
+                </TabsContent>
+              )}
             </Tabs>
           </>
         )}

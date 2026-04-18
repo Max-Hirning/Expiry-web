@@ -37,6 +37,7 @@ export const TagsListElement: FC<IProps> = ({ tag }) => {
       <Checkbox
         checked={selectedTagsIds.has(tag.id)}
         onCheckedChange={() => toggleSelectedTagId(tag.id)}
+        onClick={event => event.stopPropagation()}
       />
       <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
       <span className="flex-1">{tag.tag}</span>

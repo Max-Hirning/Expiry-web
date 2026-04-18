@@ -41,7 +41,7 @@ export const TeamSelector = () => {
   return (
     <div
       className={cn(
-        'w-full rounded-full bg-black',
+        'relative z-50 w-full rounded-full bg-black',
         open ? 'rounded-3xl' : 'py-1',
       )}
     >

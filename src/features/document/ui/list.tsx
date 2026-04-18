@@ -3,7 +3,6 @@
 import { FC, useState } from 'react';
 
 import {
-  IDocument,
   IDocumentListItem,
   IGetDocumentsParams,
   useGetDocumentsInfiniteScroll,
@@ -64,6 +63,7 @@ export const DocumentsList: FC<IProps> = ({
       <DocumentDrawer
         document={selectedDocument}
         open={!!selectedDocument}
+        teamId={selectedTeam?.id || ''}
         onClose={() => setSelectedDocument(null)}
       />
     </>

@@ -40,12 +40,14 @@ const Input = React.forwardRef<
   HTMLInputElement,
   React.ComponentProps<'input'> & {
     hidePasswordStrengthChecker?: boolean;
+    containerClassName?: string;
   }
 >(
   (
     {
       className,
       value,
+      containerClassName,
       hidePasswordStrengthChecker,
       type,
       placeholder,
@@ -97,7 +99,7 @@ const Input = React.forwardRef<
 
     return (
       <>
-        <div className="relative">
+        <div className={cn('relative', containerClassName)}>
           <Search
             size={16}
             className={cn(

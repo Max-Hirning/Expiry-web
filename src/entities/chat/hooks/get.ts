@@ -27,7 +27,7 @@ export const useGetChatsInfiniteScroll = (query: IGetChatsParams) => {
 export const useGetChat = (params: IGetChatParams) => {
   return useQuery({
     enabled: !!(params.teamId && params.chatId),
-    queryKey: [QueryKeys.GET_CHAT, params],
+    queryKey: [QueryKeys.GET_CHATS, params],
     queryFn: ({ signal }) => getChat(params, signal),
   });
 };
@@ -45,8 +45,10 @@ export const useGetMessagesInfiniteScroll = (query: IGetMessagesParams) => {
     initialPageParam: undefined as string | undefined,
     enabled: !!(query.teamId && query.chatId),
     queryKey: [QueryKeys.GET_INFINITE_MESSAGES, query],
-    queryFn: ({ pageParam }) => getMessages({ ...query, cursor: pageParam }),
+    queryFn: ({ pageParam }) =>
+      getMessages({ ...query, cursor: pageParam, direction: 'up' }),
     getNextPageParam: lastPage =>
       lastPage.data.pagination.nextCursor ?? undefined,
+    refetchOnMount: 'always',
   });
 };

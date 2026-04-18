@@ -2,7 +2,7 @@
 
 import { FC, useState } from 'react';
 
-import { IDocument, IDocumentListItem } from 'entities/document';
+import { IDocumentListItem } from 'entities/document';
 import { EllipsisVertical, Pencil, Trash, Upload } from 'lucide-react';
 
 import { cn } from 'shared/lib';

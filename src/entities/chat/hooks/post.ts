@@ -13,9 +13,6 @@ export const useSendMessage = () => {
         queryKey: [QueryKeys.GET_MESSAGES],
       });
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
-      });
-      queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_CHATS],
       });
       queryClient.invalidateQueries({
@@ -35,9 +32,6 @@ export const useMarkMessagesRead = () => {
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_MESSAGES],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_CHATS],

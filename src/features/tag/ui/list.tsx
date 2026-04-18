@@ -24,7 +24,6 @@ export const TagsList = () => {
     selectedTeam,
     tagsAndDocumentsFilters,
     selectedTagsIds,
-    toggleSelectedTagId,
     resetSelectedTagIds,
     resetSelectedDocumentIds,
     selectedDocumentIds,
