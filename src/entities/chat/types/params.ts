@@ -13,4 +13,5 @@ export interface IGetMessagesParams extends ICursorPaginationParams {
   teamId: string;
   chatId: string;
   parentMessageId?: string;
+  direction?: 'up' | 'down';
 }

@@ -45,7 +45,8 @@ export const useGetMessagesInfiniteScroll = (query: IGetMessagesParams) => {
     initialPageParam: undefined as string | undefined,
     enabled: !!(query.teamId && query.chatId),
     queryKey: [QueryKeys.GET_INFINITE_MESSAGES, query],
-    queryFn: ({ pageParam }) => getMessages({ ...query, cursor: pageParam }),
+    queryFn: ({ pageParam }) =>
+      getMessages({ ...query, cursor: pageParam, direction: 'up' }),
     getNextPageParam: lastPage =>
       lastPage.data.pagination.nextCursor ?? undefined,
     refetchOnMount: 'always',

@@ -15,7 +15,7 @@ import {
 import debounce from 'lodash/debounce';
 import { LoaderCircle, Send, X } from 'lucide-react';
 
-import { Button, Input, ScrollArea } from 'shared/ui';
+import { Button, Input } from 'shared/ui';
 
 import { ChatMessage } from './chat-message';
 
@@ -29,8 +29,13 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
   const [editingMessage, setEditingMessage] = useState<IChatMessage | null>(
     null,
   );
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const seenIdsRef = useRef<Set<string>>(new Set());
+  const prevScrollHeightRef = useRef(0);
+  const prevPagesLengthRef = useRef(0);
+  const isLoadingOlderRef = useRef(false);
 
   const { data: user } = useSession();
   const { data: chatData } = useGetChat({ teamId, chatId });
@@ -64,13 +69,67 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
 
   const currentMember = chat?.members.find(m => m.userId === userId);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    const container = scrollContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+    container.scrollTo({ top: container.scrollHeight, behavior });
   };
 
+  // Scroll to bottom on new messages, but not when loading older ones
   useEffect(() => {
-    scrollToBottom();
+    if (!isLoadingOlderRef.current) {
+      const isInitialLoad = prevPagesLengthRef.current === 0;
+
+      scrollToBottom(isInitialLoad ? 'instant' : 'smooth');
+    }
   }, [messages.length]);
+
+  // Restore scroll position after older messages are prepended
+  useEffect(() => {
+    const pagesLength = messagesData?.pages.length ?? 0;
+    const container = scrollContainerRef.current;
+
+    if (
+      pagesLength > prevPagesLengthRef.current &&
+      prevPagesLengthRef.current > 0 &&
+      container &&
+      isLoadingOlderRef.current
+    ) {
+      container.scrollTop =
+        container.scrollHeight - prevScrollHeightRef.current;
+      isLoadingOlderRef.current = false;
+    }
+
+    prevPagesLengthRef.current = pagesLength;
+  }, [messagesData?.pages.length]);
+
+  // Observe top sentinel to trigger loading older messages
+  useEffect(() => {
+    const sentinel = topSentinelRef.current;
+    const container = scrollContainerRef.current;
+
+    if (!sentinel || !container) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          prevScrollHeightRef.current = container.scrollHeight;
+          isLoadingOlderRef.current = true;
+          fetchNextPage();
+        }
+      },
+      { root: container, threshold: 0.1 },
+    );
+
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
     const flush = debouncedFlush.current;
@@ -150,22 +209,13 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
 
   return (
     <div className="flex h-full flex-col gap-0">
-      <ScrollArea className="flex-1">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
         <div className="flex flex-col gap-4 px-4 py-4">
-          {hasNextPage && (
-            <div className="flex justify-center">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fetchNextPage()}
-                disabled={isFetchingNextPage}
-              >
-                {isFetchingNextPage ? (
-                  <LoaderCircle size={16} className="animate-spin" />
-                ) : (
-                  'Load older messages'
-                )}
-              </Button>
+          <div ref={topSentinelRef} className="h-1" />
+
+          {isFetchingNextPage && (
+            <div className="flex justify-center py-1">
+              <LoaderCircle size={16} className="animate-spin text-gray-400" />
             </div>
           )}
 
@@ -198,7 +248,7 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
           )}
           <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
+      </div>
 
       {editingMessage && (
         <div className="flex items-center justify-between border-t bg-gray-50 px-4 py-2">

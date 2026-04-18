@@ -33,12 +33,19 @@ export const getChat = async (
 };
 
 export const getMessages = async (
-  { teamId, chatId, cursor, limit, parentMessageId }: IGetMessagesParams,
+  {
+    teamId,
+    chatId,
+    cursor,
+    limit,
+    parentMessageId,
+    direction,
+  }: IGetMessagesParams,
   signal?: AbortSignal,
 ): Promise<IMessagesResponse> => {
   const response = await api.get(`/chats/${teamId}/${chatId}/messages`, {
     signal,
-    params: { cursor, limit, parentMessageId },
+    params: { cursor, limit, parentMessageId, direction },
   });
 
   return response.data;
