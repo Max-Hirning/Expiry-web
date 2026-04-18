@@ -4,6 +4,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 
 import { useSession } from 'entities/auth';
 import {
+  useChatSocket,
   useGetChat,
   useGetMessagesInfiniteScroll,
   useSendMessage,
@@ -37,6 +38,8 @@ export const ChatWindow: FC<ChatWindowProps> = ({ chatId, teamId }) => {
     limit: 15,
   });
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
+
+  useChatSocket({ chatId, teamId });
 
   const messages =
     messagesData?.pages.flatMap(page => page.data.messages).reverse() || [];
