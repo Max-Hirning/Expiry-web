@@ -12,9 +12,6 @@ export const useDeleteMessage = () => {
         queryKey: [QueryKeys.GET_MESSAGES],
       });
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
-      });
-      queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_CHATS],
       });
       queryClient.invalidateQueries({

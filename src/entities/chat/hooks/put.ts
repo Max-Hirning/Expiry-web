@@ -12,9 +12,6 @@ export const useEditMessage = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.GET_MESSAGES],
       });
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_INFINITE_MESSAGES],
-      });
     },
     onError(error) {
       console.error(error);

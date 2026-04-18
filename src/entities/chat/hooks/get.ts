@@ -48,5 +48,6 @@ export const useGetMessagesInfiniteScroll = (query: IGetMessagesParams) => {
     queryFn: ({ pageParam }) => getMessages({ ...query, cursor: pageParam }),
     getNextPageParam: lastPage =>
       lastPage.data.pagination.nextCursor ?? undefined,
+    refetchOnMount: 'always',
   });
 };
