@@ -5,12 +5,14 @@ import { Switch } from '../shadcn';
 interface IProps {
   label: string;
   description: string;
+  disabled?: boolean;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
 }
 
 export const ToggleFormElement: FC<IProps> = ({
   label,
+  disabled,
   description,
   checked,
   onCheckedChange,
@@ -21,7 +23,11 @@ export const ToggleFormElement: FC<IProps> = ({
         <p className="font-medium leading-none text-foreground">{label}</p>
         <p className="leading-5 text-muted-foreground">{description}</p>
       </div>
-      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+      <Switch
+        disabled={disabled}
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+      />
     </div>
   );
 };

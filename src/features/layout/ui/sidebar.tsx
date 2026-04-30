@@ -61,9 +61,14 @@ export const SideBar = () => {
         </p>
         {bottomNavItems.map(({ label, href, icon: Icon }) => (
           <Link
-            key={label}
+            key={href}
             href={href}
-            className="flex h-10 w-full items-center gap-2 rounded-full px-3 text-sm font-normal text-[#a1a1aa] transition-colors hover:bg-[#1c1917] hover:text-[#fafafa]"
+            className={cn(
+              'flex h-10 w-full items-center gap-2 rounded-full px-3 text-sm transition-colors',
+              isActive(href)
+                ? 'border border-[rgba(255,56,187,0.8)] bg-[#292524] font-medium text-[#fafafa] drop-shadow-[0px_1px_3px_rgba(255,255,255,0.18),0px_1px_10px_rgba(255,255,255,0.15)]'
+                : 'font-normal text-[#a1a1aa] hover:bg-[#1c1917] hover:text-[#fafafa]',
+            )}
           >
             <Icon size={16} />
             {label}

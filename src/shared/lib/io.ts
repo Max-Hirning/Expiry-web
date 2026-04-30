@@ -15,7 +15,7 @@ export const getSocket = (): Socket => {
 };
 
 export const socket = new Proxy({} as Socket, {
-  get(_, prop) {
-    return (getSocket() as any)[prop];
+  get(_, prop: keyof Socket) {
+    return getSocket()[prop];
   },
 });
