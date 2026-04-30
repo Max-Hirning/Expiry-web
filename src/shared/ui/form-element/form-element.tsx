@@ -2,7 +2,7 @@ import { FC, ReactElement } from 'react';
 
 import { cn } from 'shared/lib';
 
-import { FormControl, FormItem, FormLabel, FormMessage } from './shadcn';
+import { FormControl, FormItem, FormLabel, FormMessage } from '../shadcn';
 
 interface IProps {
   label?: string | ReactElement;
