@@ -1,6 +1,6 @@
 'use client';
 
-import { useMarkAllNotificationsRead } from 'entities/notification';
+import { useMarkNotificationsRead } from 'entities/notification';
 import { CheckCheck, Search } from 'lucide-react';
 
 import { cn } from 'shared/lib';
@@ -23,7 +23,7 @@ export const NotificationsListFilters = () => {
     toggleUnreadsOnly,
   } = useNotificationStore();
 
-  const { mutate: markAllRead } = useMarkAllNotificationsRead();
+  const { mutate: markAllRead } = useMarkNotificationsRead();
 
   return (
     <div className="flex flex-col gap-3">

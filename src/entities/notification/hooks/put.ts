@@ -3,18 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { QueryKeys } from 'shared/constants';
 import { queryClient } from 'shared/lib';
 
-import {
-  patchAllNotifications,
-  patchNotification,
-  patchToggleStarred,
-} from '../api';
-import {
-  IGetNotificationParams,
-  IMarkAllNotificationsRead,
-  IToggleStarredPayload,
-} from '../types';
+import { patchNotification, patchToggleStarred } from '../api';
+import { IMarkNotificationsReadPayload, IToggleStarredPayload } from '../types';
 
-export const useMarkNotificationRead = () => {
+export const useMarkNotificationsRead = () => {
   return useMutation({
     onSuccess() {
       queryClient.invalidateQueries({
@@ -27,25 +19,8 @@ export const useMarkNotificationRead = () => {
     onError(error) {
       console.error(error);
     },
-    mutationFn: (params: IGetNotificationParams) => patchNotification(params),
-  });
-};
-
-export const useMarkAllNotificationsRead = () => {
-  return useMutation({
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_NOTIFICATIONS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.GET_INFINITE_NOTIFICATIONS],
-      });
-    },
-    onError(error) {
-      console.error(error);
-    },
-    mutationFn: (payload: IMarkAllNotificationsRead) =>
-      patchAllNotifications(payload),
+    mutationFn: (payload: IMarkNotificationsReadPayload) =>
+      patchNotification(payload),
   });
 };
 

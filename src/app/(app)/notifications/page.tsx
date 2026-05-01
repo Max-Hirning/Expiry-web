@@ -16,13 +16,13 @@ const BulkActionsBar = ({ count }: { count: number }) => (
 );
 
 export default function NotificationsPage() {
-  const { selectedIds } = useNotificationStore();
+  // const { starredNotificationIds } = useNotificationStore();
 
   return (
     <>
       <header className="sticky top-0 flex !h-fit flex-col gap-3 p-4 header-position">
         <NotificationsListFilters />
-        {selectedIds.size > 0 && <BulkActionsBar count={selectedIds.size} />}
+        {/* {starredNotificationIds.size > 0 && <BulkActionsBar count={starredNotificationIds.size} />} */}
       </header>
 
       <main className="flex !h-[calc(100%-124px)] flex-col overflow-auto p-4 pt-0 main-position">

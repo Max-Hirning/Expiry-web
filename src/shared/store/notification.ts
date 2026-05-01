@@ -12,26 +12,30 @@ interface INotificationStore {
   search: string;
   activeTab: NotificationActiveTab;
   showUnreadsOnly: boolean;
-  selectedIds: Set<string>;
+  starredNotificationIds: Set<string>;
+  readNotificationIds: Set<string>;
   setSearch: (search: string) => void;
   setActiveTab: (tab: NotificationActiveTab) => void;
   toggleUnreadsOnly: () => void;
-  toggleSelectedId: (id: string) => void;
-  resetSelectedIds: () => void;
+  toggleStarredNotificationId: (id: string) => void;
+  toggleReadNotificationId: (id: string) => void;
+  resetStarredNotificationIds: () => void;
+  resetReadNotificationIds: () => void;
 }
 
 export const useNotificationStore = create<INotificationStore>(set => ({
   search: '',
   activeTab: 'all',
   showUnreadsOnly: false,
-  selectedIds: new Set(),
+  starredNotificationIds: new Set(),
+  readNotificationIds: new Set(),
   setSearch: search => set({ search }),
   setActiveTab: activeTab => set({ activeTab }),
   toggleUnreadsOnly: () =>
     set(state => ({ showUnreadsOnly: !state.showUnreadsOnly })),
-  toggleSelectedId: id =>
+  toggleStarredNotificationId: id =>
     set(state => {
-      const next = new Set(state.selectedIds);
+      const next = new Set(state.starredNotificationIds);
 
       if (next.has(id)) {
         next.delete(id);
@@ -39,9 +43,22 @@ export const useNotificationStore = create<INotificationStore>(set => ({
         next.add(id);
       }
 
-      return { selectedIds: next };
+      return { starredNotificationIds: next };
     }),
-  resetSelectedIds: () => set({ selectedIds: new Set() }),
+  toggleReadNotificationId: id =>
+    set(state => {
+      const next = new Set(state.readNotificationIds);
+
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+
+      return { readNotificationIds: next };
+    }),
+  resetStarredNotificationIds: () => set({ starredNotificationIds: new Set() }),
+  resetReadNotificationIds: () => set({ readNotificationIds: new Set() }),
 }));
 
 export const ACTION_REQUIRED_TYPES: NotificationTypes[] = [

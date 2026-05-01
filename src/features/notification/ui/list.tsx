@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import {
   useGetNotificationsInfiniteScroll,
-  useMarkNotificationRead,
+  useMarkNotificationsRead,
   useToggleStarred,
 } from 'entities/notification';
 import debounce from 'lodash/debounce';
@@ -25,9 +25,12 @@ export const NotificationsList = () => {
     search,
     activeTab,
     showUnreadsOnly,
-    selectedIds,
-    toggleSelectedId,
-    resetSelectedIds,
+    starredNotificationIds,
+    readNotificationIds,
+    toggleStarredNotificationId,
+    toggleReadNotificationId,
+    resetStarredNotificationIds,
+    resetReadNotificationIds,
   } = useNotificationStore();
 
   let types:
@@ -52,7 +55,7 @@ export const NotificationsList = () => {
 
   const notifications = data?.pages.flatMap(p => p.data.notifications) ?? [];
 
-  const { mutate: markRead } = useMarkNotificationRead();
+  const { mutate: toggleRead } = useMarkNotificationsRead();
   const { mutate: toggleStarred } = useToggleStarred();
 
   const debouncedBulkStar = useMemo(
@@ -60,25 +63,51 @@ export const NotificationsList = () => {
       debounce((ids: string[]) => {
         if (ids.length > 0) {
           toggleStarred({ notificationIds: ids });
-          resetSelectedIds();
+          resetStarredNotificationIds();
         }
       }, 600),
-    [toggleStarred, resetSelectedIds],
+    [toggleStarred, resetStarredNotificationIds],
+  );
+
+  const debouncedBulkRead = useMemo(
+    () =>
+      debounce((ids: string[]) => {
+        if (ids.length > 0) {
+          toggleRead({ notificationIds: ids });
+          resetReadNotificationIds();
+        }
+      }, 600),
+    [toggleRead, resetReadNotificationIds],
   );
 
   useEffect(() => {
-    const ids = Array.from(selectedIds);
+    const ids = Array.from(starredNotificationIds);
 
     if (ids.length > 0) {
       debouncedBulkStar(ids);
     }
 
     return () => debouncedBulkStar.cancel();
-  }, [selectedIds, debouncedBulkStar]);
+  }, [starredNotificationIds, debouncedBulkStar]);
 
-  const toggleSelect = useCallback(
-    (id: string) => toggleSelectedId(id),
-    [toggleSelectedId],
+  useEffect(() => {
+    const ids = Array.from(readNotificationIds);
+
+    if (ids.length > 0) {
+      debouncedBulkRead(ids);
+    }
+
+    return () => debouncedBulkRead.cancel();
+  }, [readNotificationIds, debouncedBulkRead]);
+
+  const toggleSelectStarred = useCallback(
+    (id: string) => toggleStarredNotificationId(id),
+    [toggleStarredNotificationId],
+  );
+
+  const toggleSelectRead = useCallback(
+    (id: string) => toggleReadNotificationId(id),
+    [toggleReadNotificationId],
   );
 
   if (notifications.length === 0 && !isFetchingNextPage) {
@@ -100,9 +129,10 @@ export const NotificationsList = () => {
             index === 0 && 'rounded-t-md',
           )}
           notification={n}
-          isSelected={selectedIds.has(n.id)}
-          onToggleSelect={() => toggleSelect(n.id)}
-          onToggleRead={() => markRead({ notificationId: n.id })}
+          isStarredSelected={starredNotificationIds.has(n.id)}
+          isReadSelected={readNotificationIds.has(n.id)}
+          onToggleSelect={() => toggleSelectStarred(n.id)}
+          onToggleRead={() => toggleSelectRead(n.id)}
         />
       ))}
       <InfiniteScroll

@@ -1,5 +1,6 @@
-export interface IMarkAllNotificationsRead {
-  allRead: boolean;
+export interface IMarkNotificationsReadPayload {
+  notificationIds?: string[];
+  allRead?: boolean;
 }
 
 export interface IToggleStarredPayload {

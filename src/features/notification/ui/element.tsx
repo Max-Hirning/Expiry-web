@@ -6,13 +6,13 @@ import { INotification } from 'entities/notification';
 import { BadgeInfo, Mail, MailOpen, Star, UserRound } from 'lucide-react';
 
 import { cn } from 'shared/lib';
-import { Button } from 'shared/ui';
 
 import { NOTIFICATION_LABELS, SYSTEM_TYPES } from '../constants';
 
 interface IProps {
   notification: INotification;
-  isSelected: boolean;
+  isStarredSelected: boolean;
+  isReadSelected: boolean;
   className?: string;
   onToggleSelect: () => void;
   onToggleRead: () => void;
@@ -20,12 +20,14 @@ interface IProps {
 
 export const NotificationElement: FC<IProps> = ({
   notification,
-  isSelected,
+  isStarredSelected,
+  isReadSelected,
   className,
   onToggleSelect,
   onToggleRead,
 }) => {
-  const isUnread = notification.readAt === null;
+  const isStarred = notification.isStarred || isStarredSelected;
+  const isRead = notification.readAt !== null || isReadSelected;
   const isSystem = SYSTEM_TYPES.has(notification.type);
 
   const label = NOTIFICATION_LABELS[notification.type] ?? notification.type;
@@ -43,7 +45,7 @@ export const NotificationElement: FC<IProps> = ({
     <div
       className={cn(
         'group flex items-center gap-6 px-4 py-2 transition-colors hover:bg-stone-100',
-        isUnread ? 'bg-stone-50' : 'bg-white',
+        isRead ? 'bg-white' : 'bg-stone-50',
         className,
       )}
     >
@@ -61,15 +63,15 @@ export const NotificationElement: FC<IProps> = ({
 
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex items-center gap-1.5">
-          {isUnread && (
+          {!isRead && (
             <span className="h-2 w-2 shrink-0 rounded-full bg-[#4c4ea1]" />
           )}
           <span
             className={cn(
               'truncate text-sm',
-              isUnread
-                ? 'font-semibold text-zinc-900'
-                : 'font-medium text-zinc-500',
+              isRead
+                ? 'font-medium text-zinc-500'
+                : 'font-semibold text-zinc-900',
             )}
           >
             {label}
@@ -77,7 +79,7 @@ export const NotificationElement: FC<IProps> = ({
               <>
                 {' '}
                 <span
-                  className={cn(isUnread ? 'text-zinc-900' : 'text-zinc-400')}
+                  className={cn(isRead ? 'text-zinc-400' : 'text-zinc-900')}
                 >
                   {resourceName}
                 </span>
@@ -88,7 +90,7 @@ export const NotificationElement: FC<IProps> = ({
         <span
           className={cn(
             'text-xs font-semibold',
-            isUnread ? 'text-zinc-900' : 'text-zinc-500',
+            isRead ? 'text-zinc-500' : 'text-zinc-900',
           )}
         >
           {timestamp}
@@ -99,32 +101,30 @@ export const NotificationElement: FC<IProps> = ({
         <button
           type="button"
           onClick={onToggleRead}
-          title={isUnread ? 'Mark as read' : 'Mark as unread'}
+          title={isRead ? 'Mark as unread' : 'Mark as read'}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 bg-white opacity-0 transition-opacity hover:bg-stone-50 group-hover:opacity-100"
         >
-          {isUnread ? (
-            <MailOpen size={16} className="text-zinc-500" />
-          ) : (
+          {isRead ? (
             <Mail size={16} className="text-zinc-500" />
+          ) : (
+            <MailOpen size={16} className="text-zinc-500" />
           )}
         </button>
 
         <button
           type="button"
-          aria-label={notification.isStarred || isSelected ? 'Unstar' : 'Star'}
+          aria-label={isStarred ? 'Unstar' : 'Star'}
           onClick={onToggleSelect}
-          title={notification.isStarred || isSelected ? 'Unstar' : 'Star'}
+          title={isStarred ? 'Unstar' : 'Star'}
           className={cn(
             'flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 bg-white transition-opacity hover:bg-stone-50',
-            notification.isStarred || isSelected
-              ? 'opacity-100'
-              : 'opacity-0 group-hover:opacity-100',
+            isStarred ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
           )}
         >
           <Star
             size={16}
             className={cn(
-              notification.isStarred || isSelected
+              notification.isStarred || isStarred
                 ? 'fill-amber-400 text-amber-400'
                 : 'text-zinc-400',
             )}
