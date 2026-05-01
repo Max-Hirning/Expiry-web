@@ -9,6 +9,7 @@ import { Form, ToggleFormElement } from 'shared/ui';
 import { PreferencesFormInput } from '../../schemas';
 
 interface IProps {
+  defaultValues?: Partial<PreferencesFormInput>;
   form: UseFormReturn<PreferencesFormInput>;
   disabled?: boolean;
   onSubmit: (value: PreferencesFormInput) => void;
@@ -16,6 +17,7 @@ interface IProps {
 
 export const UserPreferencesForm: FC<IProps> = ({
   form,
+  defaultValues,
   disabled,
   onSubmit,
 }) => {
@@ -33,7 +35,9 @@ export const UserPreferencesForm: FC<IProps> = ({
             <ToggleFormElement
               label="Get notified via MSP"
               description="Receive notifications right in the MSP portal."
-              checked={field.value || false}
+              checked={
+                field.value ?? defaultValues?.inAppNotifications ?? false
+              }
               disabled={disabled}
               onCheckedChange={field.onChange}
             />
@@ -46,7 +50,9 @@ export const UserPreferencesForm: FC<IProps> = ({
             <ToggleFormElement
               label="Get notified via Email"
               description="Receive notifications directly in your inbox."
-              checked={field.value || false}
+              checked={
+                field.value ?? defaultValues?.emailNotifications ?? false
+              }
               disabled={disabled}
               onCheckedChange={field.onChange}
             />
@@ -59,7 +65,7 @@ export const UserPreferencesForm: FC<IProps> = ({
             <ToggleFormElement
               label="Team news"
               description="Receive updates about activity in your teams."
-              checked={field.value || false}
+              checked={field.value ?? defaultValues?.teamNews ?? false}
               disabled={disabled}
               onCheckedChange={field.onChange}
             />
@@ -72,7 +78,7 @@ export const UserPreferencesForm: FC<IProps> = ({
             <ToggleFormElement
               label="Document news"
               description="Receive updates when documents are changed or shared."
-              checked={field.value || false}
+              checked={field.value ?? defaultValues?.documentNews ?? false}
               disabled={disabled}
               onCheckedChange={field.onChange}
             />

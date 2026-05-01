@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'entities/auth';
 import { useUpdateUser } from 'entities/user';
@@ -22,20 +20,9 @@ export const UserPreferencesWidget = () => {
     resolver: zodResolver(preferencesFormSchema),
   });
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-
-    form.reset({
-      inAppNotifications: user.notificationPreferences.inAppNotifications,
-      emailNotifications: user.notificationPreferences.emailNotifications,
-      documentNews: user.notificationPreferences.documentNews,
-      teamNews: user.notificationPreferences.teamNews,
-    });
-  }, [user]);
-
   const { mutate: updateUser, isPending } = useUpdateUser();
+
+  console.log(form.watch());
 
   const onReset = () => {
     form.reset();
@@ -55,6 +42,23 @@ export const UserPreferencesWidget = () => {
       },
     });
   };
+  const retrieveDefaultValues = (): Partial<PreferencesFormInput> => {
+    if (!user) {
+      return {
+        inAppNotifications: false,
+        emailNotifications: false,
+        documentNews: false,
+        teamNews: false,
+      };
+    }
+
+    return {
+      inAppNotifications: user.notificationPreferences.inAppNotifications,
+      emailNotifications: user.notificationPreferences.emailNotifications,
+      documentNews: user.notificationPreferences.documentNews,
+      teamNews: user.notificationPreferences.teamNews,
+    };
+  };
 
   return (
     <>
@@ -64,6 +68,7 @@ export const UserPreferencesWidget = () => {
         </p>
         <UserPreferencesForm
           form={form}
+          defaultValues={retrieveDefaultValues()}
           disabled={isLoading}
           onSubmit={onSubmit}
         />
@@ -81,7 +86,7 @@ export const UserPreferencesWidget = () => {
         <Button
           type="submit"
           form="preferences-form"
-          disabled={!user}
+          disabled={!user || !form.formState.isValid}
           isLoading={isPending}
           className="h-10 rounded-full bg-primary px-8 text-black"
         >

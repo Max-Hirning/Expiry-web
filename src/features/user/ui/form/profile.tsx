@@ -10,11 +10,17 @@ import { ProfileFormInput } from '../../schemas';
 
 interface IProps {
   form: UseFormReturn<ProfileFormInput>;
+  defaultValues?: Partial<ProfileFormInput>;
   disabled?: boolean;
   onSubmit: (value: ProfileFormInput) => void;
 }
 
-export const UserProfileForm: FC<IProps> = ({ form, disabled, onSubmit }) => {
+export const UserProfileForm: FC<IProps> = ({
+  defaultValues,
+  form,
+  disabled,
+  onSubmit,
+}) => {
   return (
     <Form {...form}>
       <form
@@ -30,6 +36,7 @@ export const UserProfileForm: FC<IProps> = ({ form, disabled, onSubmit }) => {
               <FormElement label="First name" className="max-w-full">
                 <Input
                   {...field}
+                  value={field.value || defaultValues?.firstName}
                   disabled={disabled}
                   placeholder="First name"
                 />
@@ -41,7 +48,12 @@ export const UserProfileForm: FC<IProps> = ({ form, disabled, onSubmit }) => {
             name="lastName"
             render={({ field }) => (
               <FormElement label="Last name" className="max-w-full">
-                <Input {...field} disabled={disabled} placeholder="Last name" />
+                <Input
+                  {...field}
+                  value={field.value || defaultValues?.lastName}
+                  disabled={disabled}
+                  placeholder="Last name"
+                />
               </FormElement>
             )}
           />
@@ -55,6 +67,7 @@ export const UserProfileForm: FC<IProps> = ({ form, disabled, onSubmit }) => {
               <Input
                 {...field}
                 type="email"
+                value={field.value || defaultValues?.email}
                 disabled={disabled}
                 placeholder="email@example.com"
               />
@@ -70,6 +83,7 @@ export const UserProfileForm: FC<IProps> = ({ form, disabled, onSubmit }) => {
               <Input
                 {...field}
                 type="tel"
+                value={field.value || defaultValues?.phoneNumber}
                 disabled={disabled}
                 placeholder="Phone number"
               />
