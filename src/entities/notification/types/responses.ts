@@ -22,7 +22,7 @@ export interface INotificationsResponse {
   };
 }
 
-export interface IMarkAllNotificationsReadResponse {
+export interface INotificationsBulkMutationResponse {
   message: string;
   data: {
     count: number;

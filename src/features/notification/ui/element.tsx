@@ -26,8 +26,8 @@ export const NotificationElement: FC<IProps> = ({
   onToggleSelect,
   onToggleRead,
 }) => {
-  const isStarred = notification.isStarred || isStarredSelected;
-  const isRead = notification.readAt !== null || isReadSelected;
+  const isStarred = notification.isStarred !== isStarredSelected;
+  const isRead = (notification.readAt !== null) !== isReadSelected;
   const isSystem = SYSTEM_TYPES.has(notification.type);
 
   const label = NOTIFICATION_LABELS[notification.type] ?? notification.type;
@@ -124,9 +124,7 @@ export const NotificationElement: FC<IProps> = ({
           <Star
             size={16}
             className={cn(
-              notification.isStarred || isStarred
-                ? 'fill-amber-400 text-amber-400'
-                : 'text-zinc-400',
+              isStarred ? 'fill-amber-400 text-amber-400' : 'text-zinc-400',
             )}
           />
         </button>

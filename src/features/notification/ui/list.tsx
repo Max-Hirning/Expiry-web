@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   useGetNotificationsInfiniteScroll,
@@ -11,14 +11,19 @@ import debounce from 'lodash/debounce';
 import { Bell, LoaderCircle } from 'lucide-react';
 
 import { cn } from 'shared/lib';
-import {
-  ACTION_REQUIRED_TYPES,
-  INFORMATIVE_TYPES,
-  useNotificationStore,
-} from 'shared/store';
+import { NotificationActiveTab, useNotificationStore } from 'shared/store';
+import { NotificationTypes } from 'shared/types';
 import { InfiniteScroll } from 'shared/ui';
 
+import { ACTION_REQUIRED_TYPES, INFORMATIVE_TYPES } from '../constants';
 import { NotificationElement } from './element';
+
+const TYPES_BY_TAB: Partial<
+  Record<NotificationActiveTab, NotificationTypes[]>
+> = {
+  actionRequired: ACTION_REQUIRED_TYPES,
+  informative: INFORMATIVE_TYPES,
+};
 
 export const NotificationsList = () => {
   const {
@@ -33,21 +38,20 @@ export const NotificationsList = () => {
     resetReadNotificationIds,
   } = useNotificationStore();
 
-  let types:
-    | typeof ACTION_REQUIRED_TYPES
-    | typeof INFORMATIVE_TYPES
-    | undefined;
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  if (activeTab === 'actionRequired') {
-    types = ACTION_REQUIRED_TYPES;
-  } else if (activeTab === 'informative') {
-    types = INFORMATIVE_TYPES;
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const types = TYPES_BY_TAB[activeTab];
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetNotificationsInfiniteScroll({
       limit: 10,
-      search: search.trim() || undefined,
+      search: debouncedSearch.trim() || undefined,
       isRead: showUnreadsOnly ? false : undefined,
       isStarred: activeTab === 'starred' ? true : undefined,
       types,
@@ -62,8 +66,10 @@ export const NotificationsList = () => {
     () =>
       debounce((ids: string[]) => {
         if (ids.length > 0) {
-          toggleStarred({ notificationIds: ids });
-          resetStarredNotificationIds();
+          toggleStarred(
+            { notificationIds: ids },
+            { onSuccess: resetStarredNotificationIds },
+          );
         }
       }, 600),
     [toggleStarred, resetStarredNotificationIds],
@@ -73,8 +79,10 @@ export const NotificationsList = () => {
     () =>
       debounce((ids: string[]) => {
         if (ids.length > 0) {
-          toggleRead({ notificationIds: ids });
-          resetReadNotificationIds();
+          toggleRead(
+            { notificationIds: ids },
+            { onSuccess: resetReadNotificationIds },
+          );
         }
       }, 600),
     [toggleRead, resetReadNotificationIds],

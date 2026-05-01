@@ -4,11 +4,7 @@ import { useMarkNotificationsRead } from 'entities/notification';
 import { CheckCheck, Search } from 'lucide-react';
 
 import { cn } from 'shared/lib';
-import {
-  ACTION_REQUIRED_TYPES,
-  INFORMATIVE_TYPES,
-  useNotificationStore,
-} from 'shared/store';
+import { useNotificationStore } from 'shared/store';
 import { Input } from 'shared/ui';
 
 import { tabs } from '../constants';

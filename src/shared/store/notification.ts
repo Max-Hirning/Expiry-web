@@ -1,7 +1,5 @@
 import { create } from 'zustand';
 
-import { NotificationTypes } from 'shared/types';
-
 export type NotificationActiveTab =
   | 'all'
   | 'actionRequired'
@@ -60,13 +58,3 @@ export const useNotificationStore = create<INotificationStore>(set => ({
   resetStarredNotificationIds: () => set({ starredNotificationIds: new Set() }),
   resetReadNotificationIds: () => set({ readNotificationIds: new Set() }),
 }));
-
-export const ACTION_REQUIRED_TYPES: NotificationTypes[] = [
-  NotificationTypes.INVITE_USER_IN_TEAM,
-  NotificationTypes.DELETE_USER_FROM_TEAM,
-];
-
-export const INFORMATIVE_TYPES: NotificationTypes[] = [
-  NotificationTypes.DELETE_DOCUMENT,
-  NotificationTypes.DELETE_TEAM,
-];

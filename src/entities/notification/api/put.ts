@@ -1,13 +1,13 @@
 import { api } from 'shared/lib';
 
 import {
-  IMarkAllNotificationsReadResponse,
   IMarkNotificationsReadPayload,
+  INotificationsBulkMutationResponse,
   INotificationsResponse,
   IToggleStarredPayload,
 } from '../types';
 
-export const patchNotification = async (
+export const markNotificationsRead = async (
   payload: IMarkNotificationsReadPayload,
   signal?: AbortSignal,
 ): Promise<INotificationsResponse> => {
@@ -16,10 +16,10 @@ export const patchNotification = async (
   return response.data;
 };
 
-export const patchToggleStarred = async (
+export const toggleNotificationsStarred = async (
   payload: IToggleStarredPayload,
   signal?: AbortSignal,
-): Promise<IMarkAllNotificationsReadResponse> => {
+): Promise<INotificationsBulkMutationResponse> => {
   const response = await api.put('/notifications/starred', payload, {
     signal,
   });

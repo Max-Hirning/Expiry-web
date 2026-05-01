@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { QueryKeys } from 'shared/constants';
 import { queryClient } from 'shared/lib';
 
-import { patchNotification, patchToggleStarred } from '../api';
+import { markNotificationsRead, toggleNotificationsStarred } from '../api';
 import { IMarkNotificationsReadPayload, IToggleStarredPayload } from '../types';
 
 export const useMarkNotificationsRead = () => {
@@ -20,7 +20,7 @@ export const useMarkNotificationsRead = () => {
       console.error(error);
     },
     mutationFn: (payload: IMarkNotificationsReadPayload) =>
-      patchNotification(payload),
+      markNotificationsRead(payload),
   });
 };
 
@@ -37,6 +37,7 @@ export const useToggleStarred = () => {
     onError(error) {
       console.error(error);
     },
-    mutationFn: (payload: IToggleStarredPayload) => patchToggleStarred(payload),
+    mutationFn: (payload: IToggleStarredPayload) =>
+      toggleNotificationsStarred(payload),
   });
 };
