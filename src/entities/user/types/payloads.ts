@@ -11,9 +11,11 @@ export interface IUpdateUser
     Pick<IUser, 'fullName' | 'email' | 'phoneNumber' | 'mfaType'>
   > {
   avatar?: Pick<IAvatar, 'mimeType' | 'width' | 'height' | 'fileSize'>;
-  notificationPreferences?: Pick<
-    INotificationPreference,
-    'teamNews' | 'documentNews' | 'inAppNotifications' | 'emailNotifications'
+  notificationPreferences?: Partial<
+    Pick<
+      INotificationPreference,
+      'teamNews' | 'documentNews' | 'inAppNotifications' | 'emailNotifications'
+    >
   >;
 }
 export interface IUpdateUserPassword {

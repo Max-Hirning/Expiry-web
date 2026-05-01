@@ -31,10 +31,10 @@ interface IProps<T> {
   search?: string;
   disabled?: boolean;
   setSearch?: (value: string) => void;
-  fetchNextPage: any;
+  fetchNextPage: () => void;
   listClassName?: string;
-  hasNextPage: any;
-  isFetchingNextPage: any;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
 }
 
 export const SearchSelect = <T,>({

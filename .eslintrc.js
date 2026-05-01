@@ -80,6 +80,7 @@ module.exports = {
       { blankLine: 'always', prev: ['case', 'default'], next: '*' },
     ],
 
+    '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-shadow': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
