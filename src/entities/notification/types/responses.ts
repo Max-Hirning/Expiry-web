@@ -6,6 +6,7 @@ export interface INotification {
   updatedAt: string;
   type: NotificationTypes;
   readAt: string | null;
+  isStarred: boolean;
   userId: string;
   teamName: string | null;
   teamId: string | null;

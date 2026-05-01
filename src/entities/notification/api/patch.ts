@@ -5,6 +5,7 @@ import {
   IMarkAllNotificationsRead,
   IMarkAllNotificationsReadResponse,
   INotificationsResponse,
+  IToggleStarredPayload,
 } from '../types';
 
 export const patchNotification = async (
@@ -25,6 +26,17 @@ export const patchAllNotifications = async (
   signal?: AbortSignal,
 ): Promise<IMarkAllNotificationsReadResponse> => {
   const response = await api.patch('/notifications', payload, { signal });
+
+  return response.data;
+};
+
+export const patchToggleStarred = async (
+  payload: IToggleStarredPayload,
+  signal?: AbortSignal,
+): Promise<IMarkAllNotificationsReadResponse> => {
+  const response = await api.patch('/notifications/starred', payload, {
+    signal,
+  });
 
   return response.data;
 };
