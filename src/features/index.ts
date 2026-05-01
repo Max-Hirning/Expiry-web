@@ -4,3 +4,4 @@ export * from './layout';
 export * from './document';
 export * from './tag';
 export * from './user';
+export * from './notification';
