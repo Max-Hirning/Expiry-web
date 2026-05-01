@@ -40,7 +40,7 @@ export const UserAvatar: FC<IProps> = ({
           {initials}
         </AvatarFallback>
       </Avatar>
-      {isOnline && (
+      {isOnline !== undefined && (
         <UserOnlineStatusBadge
           className={cn(
             'absolute bottom-0.5 right-0.5 z-50',

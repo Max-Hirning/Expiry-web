@@ -6,9 +6,6 @@ import { Camera, Trash2, Upload, X } from 'lucide-react';
 
 import { cn } from 'shared/lib';
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -59,7 +56,8 @@ export const AvatarUpload: FC<IAvatarUploadProps> = ({
   };
 
   const triggerFileInput = () => {
-    setTimeout(() => fileInputRef.current?.click(), 100);
+    // Radix closes the dropdown and steals focus before the click fires; defer one frame
+    requestAnimationFrame(() => fileInputRef.current?.click());
   };
 
   const handleCancel = () => onChange(undefined);
@@ -143,7 +141,7 @@ export const AvatarUpload: FC<IAvatarUploadProps> = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/png,image/jpeg"
+        accept={ACCEPTED_TYPES.join(',')}
         className="hidden"
         onChange={event => handleFileSelect(event.target.files?.[0])}
       />

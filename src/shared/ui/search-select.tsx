@@ -31,7 +31,7 @@ interface IProps<T> {
   search?: string;
   disabled?: boolean;
   setSearch?: (value: string) => void;
-  fetchNextPage: () => unknown;
+  fetchNextPage: () => void;
   listClassName?: string;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;

@@ -22,8 +22,6 @@ export const UserPreferencesWidget = () => {
 
   const { mutate: updateUser, isPending } = useUpdateUser();
 
-  console.log(form.watch());
-
   const onReset = () => {
     form.reset();
   };
