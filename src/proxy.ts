@@ -25,6 +25,7 @@ export const config = {
   matcher: [
     '/teams/:path*',
     '/teammates/:path*',
+    '/documents/:path*',
     '/',
     '/auth/sign-in',
     '/auth/sign-up',

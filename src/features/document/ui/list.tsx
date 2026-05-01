@@ -41,7 +41,7 @@ export const DocumentsList: FC<IProps> = ({
   const documents =
     documentsData?.pages.flatMap(page => page.data.documents) ?? [];
 
-  if (documents.length === 0) {
+  if (!isLoading && documents.length === 0) {
     return (
       <article className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
         <FileText size={32} className="text-gray-300" />
