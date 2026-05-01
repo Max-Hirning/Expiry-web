@@ -1,21 +1,25 @@
 import { FC } from 'react';
 
-import { IUser } from 'entities/user';
+import { IAvatar, IUser } from 'entities/user';
 
 import { cn } from 'shared/lib';
 
 import { UserOnlineStatusBadge } from './badge';
 import { Avatar, AvatarFallback, AvatarImage } from './shadcn';
 
-interface IProps extends Pick<IUser, 'avatar' | 'fullName' | 'isOnline'> {
+interface IProps extends Pick<IUser, 'fullName'> {
   className?: string;
+  classNameFallback?: string;
   classNameOnlineBadge?: string;
+  avatar: Pick<IAvatar, 'url'> | null;
+  isOnline?: boolean;
 }
 
 export const UserAvatar: FC<IProps> = ({
   classNameOnlineBadge,
   className,
   avatar,
+  classNameFallback,
   isOnline,
   fullName,
 }) => {
@@ -30,17 +34,21 @@ export const UserAvatar: FC<IProps> = ({
     <div className="relative">
       <Avatar className={cn('size-12 border border-zinc-200', className)}>
         <AvatarImage src={avatar?.url} alt={fullName} />
-        <AvatarFallback className="text-sm font-medium text-zinc-600">
+        <AvatarFallback
+          className={cn('text-sm font-medium text-zinc-600', classNameFallback)}
+        >
           {initials}
         </AvatarFallback>
       </Avatar>
-      <UserOnlineStatusBadge
-        className={cn(
-          'absolute bottom-0.5 right-0.5 z-50',
-          classNameOnlineBadge,
-        )}
-        isOnline={isOnline}
-      />
+      {isOnline !== undefined && (
+        <UserOnlineStatusBadge
+          className={cn(
+            'absolute bottom-0.5 right-0.5 z-50',
+            classNameOnlineBadge,
+          )}
+          isOnline={isOnline}
+        />
+      )}
     </div>
   );
 };
