@@ -229,17 +229,22 @@ export const UserDrawer = ({
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="activity" className="h-[calc(100%-36px-8px)]">
+              <TabsContent
+                value="activity"
+                className="h-[calc(100%-36px-8px)] overflow-auto"
+              >
                 <ActionLogsList actorIds={user ? [user?.id] : undefined} />
               </TabsContent>
               <TabsContent
                 value="documents"
-                className="h-[calc(100%-36px-8px)]"
+                className="h-[calc(100%-36px-8px)] overflow-auto"
               >
                 <DocumentsList
                   hideCheckbox
                   actorId={user?.id || undefined}
-                  authorsIds={user ? [user.id] : undefined}
+                  filters={{
+                    authorsIds: user ? [user.id] : undefined,
+                  }}
                 />
               </TabsContent>
               <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">

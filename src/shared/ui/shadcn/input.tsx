@@ -186,6 +186,7 @@ const Input = React.forwardRef<
             placeholder={constructPlaceholder()}
             className={cn(
               'flex h-12 w-full rounded-full border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+              type === 'password' && !showPassword && 'text-xl tracking-widest',
               (type === 'password' || type === 'email' || type === 'search') &&
                 'pl-9',
               type === 'tel' && 'pl-[85px]',

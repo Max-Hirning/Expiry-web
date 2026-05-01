@@ -80,7 +80,13 @@ export const TagsList = () => {
                 <TagsListElement tag={tag} />
               </AccordionTrigger>
               <AccordionContent className="pb-0">
-                <DocumentsList tagsIds={[tag.id]} />
+                <DocumentsList
+                  filters={{
+                    ...(tagsAndDocumentsFilters || {}),
+                    tagsIds: [tag.id],
+                  }}
+                  type="child"
+                />
               </AccordionContent>
             </AccordionItem>
           );

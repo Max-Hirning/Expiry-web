@@ -180,14 +180,17 @@ export const DocumentDrawer = ({
                 )}
               </TabsList>
 
-              <TabsContent value="activity" className="h-[calc(100%-36px-8px)]">
+              <TabsContent
+                value="activity"
+                className="h-[calc(100%-36px-8px)] overflow-auto"
+              >
                 <ActionLogsList
                   documentIds={document ? [document?.id] : undefined}
                 />
               </TabsContent>
               <TabsContent
                 value="documents"
-                className="h-[calc(100%-36px-8px)]"
+                className="h-[calc(100%-36px-8px)] overflow-auto"
               >
                 <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
                   <FileText size={32} className="text-gray-300" />
