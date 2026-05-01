@@ -7,12 +7,16 @@ import { UseFormReturn } from 'react-hook-form';
 import { Form, FormElement, FormField, Input } from 'shared/ui';
 
 import { ProfileFormInput } from '../../schemas';
+import { AvatarUpload } from './avatar-upload';
 
 interface IProps {
   form: UseFormReturn<ProfileFormInput>;
   defaultValues?: Partial<ProfileFormInput>;
   disabled?: boolean;
   onSubmit: (value: ProfileFormInput) => void;
+  avatarUrl?: string;
+  fullName: string;
+  onDeleteAvatar?: () => void;
 }
 
 export const UserProfileForm: FC<IProps> = ({
@@ -20,6 +24,9 @@ export const UserProfileForm: FC<IProps> = ({
   form,
   disabled,
   onSubmit,
+  avatarUrl,
+  fullName,
+  onDeleteAvatar,
 }) => {
   return (
     <Form {...form}>
@@ -86,6 +93,25 @@ export const UserProfileForm: FC<IProps> = ({
                 value={field.value || defaultValues?.phoneNumber}
                 disabled={disabled}
                 placeholder="Phone number"
+              />
+            </FormElement>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="avatar"
+          render={({ field }) => (
+            <FormElement
+              label="Profile Photo (optional)"
+              className="max-w-full"
+            >
+              <AvatarUpload
+                value={field.value}
+                onChange={field.onChange}
+                avatarUrl={avatarUrl}
+                fullName={fullName}
+                onDeleteAvatar={onDeleteAvatar}
               />
             </FormElement>
           )}

@@ -6,6 +6,9 @@ export const profileFormSchema = z
     lastName: z.string().min(1, 'Required'),
     email: z.email('Invalid email'),
     phoneNumber: z.string().min(1, 'Required'),
+    avatar: z
+      .custom<File>(val => typeof File !== 'undefined' && val instanceof File)
+      .optional(),
   })
   .partial()
   .refine(data => Object.values(data).some(v => v !== undefined && v !== ''), {

@@ -79,6 +79,7 @@ export const UserProfileWidget = () => {
           defaultValues={retrieveDefaultValues()}
           form={form}
           disabled={isLoading}
+          fullName={user?.fullName || ''}
           onSubmit={onSubmit}
         />
       </main>
