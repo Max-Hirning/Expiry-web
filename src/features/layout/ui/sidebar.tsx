@@ -61,7 +61,7 @@ export const SideBar = () => {
         </p>
         {bottomNavItems.map(({ label, href, icon: Icon }) => (
           <Link
-            key={label}
+            key={href}
             href={href}
             className="flex h-10 w-full items-center gap-2 rounded-full px-3 text-sm font-normal text-[#a1a1aa] transition-colors hover:bg-[#1c1917] hover:text-[#fafafa]"
           >

@@ -15,7 +15,7 @@ export const DocumentsListFilters = () => {
     <section className="flex w-full items-center justify-end gap-4">
       <Input
         type="search"
-        value={documentsFilters?.search}
+        value={documentsFilters?.search ?? ''}
         onChange={event =>
           updateDocumentsFilters({
             search: event.target.value,
