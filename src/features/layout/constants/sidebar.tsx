@@ -2,6 +2,7 @@ import {
   Bell,
   FileText,
   Home,
+  MessageSquare,
   SlidersHorizontal,
   User,
   Users,
@@ -10,6 +11,7 @@ import {
 export const mainNavItems = [
   { label: 'Dashboard', href: '/', icon: Home },
   { label: 'Documents', href: '/documents', icon: FileText },
+  { label: 'Chats', href: '/chats', icon: MessageSquare },
   { label: 'Teammates', href: '/teammates', icon: Users },
 ];
 export const bottomNavItems = [
