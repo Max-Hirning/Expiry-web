@@ -1,9 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { format } from 'date-fns';
 import { IUser, useUpdateUserPosition } from 'entities';
 import { Permissions, usePermissions } from 'entities/auth';
 import {
+  ArrowLeft,
   FileText,
   History,
   MessageSquare,
@@ -12,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { ActionLogsList } from 'features/action-log';
+import { ChatsList, ChatWindow } from 'features/chats';
 import { DocumentsList } from 'features/document';
 import { cn } from 'shared/lib';
 import { TeamMemberRoles } from 'shared/types';
@@ -65,6 +69,11 @@ export const UserDrawer = ({
   open,
   onClose,
 }: UserDrawerProps) => {
+  const [selectedChat, setSelectedChat] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [liveUser, setLiveUser] = useState(user);
   const { mutate: updateUserPosition, isPending: isUpdateUserPosition } =
     useUpdateUserPosition();
   const permissions = usePermissions({
@@ -72,13 +81,23 @@ export const UserDrawer = ({
     teamId,
   });
 
+  useEffect(() => {
+    setLiveUser(user);
+  }, [user]);
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedChat(null);
+    }
+  }, [open]);
+
   return (
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent
         side="right"
         className="w-[70vw] max-w-[680px] p-0 [&>button]:hidden"
       >
-        {user && (
+        {liveUser && (
           <>
             <header className="flex items-center gap-4 border-b px-4 py-3">
               <Breadcrumb className="flex-1">
@@ -88,7 +107,7 @@ export const UserDrawer = ({
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>{user.fullName}</BreadcrumbPage>
+                    <BreadcrumbPage>{liveUser?.fullName}</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
@@ -104,14 +123,14 @@ export const UserDrawer = ({
 
             <SheetHeader className="flex-row items-center gap-3 px-4 py-3">
               <UserAvatar
-                avatar={user.avatar}
-                isOnline={user.isOnline}
-                fullName={user.fullName}
+                avatar={liveUser?.avatar}
+                isOnline={liveUser?.isOnline}
+                fullName={liveUser?.fullName}
               />
               <div className="flex flex-col gap-0.5">
-                <UserStatusBadge status={user.status} />
+                <UserStatusBadge status={liveUser?.status} />
                 <SheetTitle className="text-lg font-medium">
-                  {user.fullName}
+                  {liveUser?.fullName}
                 </SheetTitle>
               </div>
             </SheetHeader>
@@ -120,15 +139,15 @@ export const UserDrawer = ({
               <DrawerRow
                 label="Invited at"
                 value={
-                  user.invitedAt
-                    ? format(new Date(user.invitedAt), 'MMM d, yyyy, h:mma')
+                  liveUser?.invitedAt
+                    ? format(new Date(liveUser.invitedAt), 'MMM d, yyyy, h:mma')
                     : '—'
                 }
               />
               <DrawerRow
                 label="Position"
                 value={
-                  user.position ? (
+                  liveUser?.position ? (
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -139,7 +158,7 @@ export const UserDrawer = ({
                           }
                           className="h-fit w-fit bg-transparent p-0"
                         >
-                          <TeamMemberRoleBadge role={user.position} />
+                          <TeamMemberRoleBadge role={liveUser.position} />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="flex w-fit flex-col items-center justify-center gap-2 p-2">
@@ -152,11 +171,24 @@ export const UserDrawer = ({
                             <Button
                               key={teamMemberRole}
                               onClick={() =>
-                                updateUserPosition({
-                                  userId: user.id,
-                                  teamId,
-                                  role: teamMemberRole,
-                                })
+                                updateUserPosition(
+                                  {
+                                    userId: user!.id,
+                                    teamId,
+                                    role: teamMemberRole,
+                                  },
+                                  {
+                                    onSuccess: data =>
+                                      setLiveUser(prev =>
+                                        prev
+                                          ? {
+                                              ...prev,
+                                              position: data.data.role,
+                                            }
+                                          : prev,
+                                      ),
+                                  },
+                                )
                               }
                               disabled={
                                 isUpdateUserPosition ||
@@ -167,7 +199,7 @@ export const UserDrawer = ({
                               variant="ghost"
                               className={cn(
                                 'h-fit w-fit cursor-pointer bg-transparent p-0',
-                                teamMemberRole === user.position &&
+                                teamMemberRole === liveUser.position &&
                                   'cursor-not-allowed',
                               )}
                             >
@@ -182,12 +214,15 @@ export const UserDrawer = ({
                   )
                 }
               />
-              <DrawerRow label="User email" value={user.email} />
+              <DrawerRow label="User email" value={liveUser?.email} />
               <DrawerRow
                 label="Last login at"
                 value={
-                  user.lastLoginAt
-                    ? format(new Date(user.lastLoginAt), 'MMM d, yyyy, h:mma')
+                  liveUser?.lastLoginAt
+                    ? format(
+                        new Date(liveUser.lastLoginAt),
+                        'MMM d, yyyy, h:mma',
+                      )
                     : '—'
                 }
               />
@@ -225,7 +260,9 @@ export const UserDrawer = ({
                 value="activity"
                 className="h-[calc(100%-36px-8px)] overflow-auto"
               >
-                <ActionLogsList actorIds={user ? [user?.id] : undefined} />
+                <ActionLogsList
+                  actorIds={liveUser ? [liveUser.id] : undefined}
+                />
               </TabsContent>
               <TabsContent
                 value="documents"
@@ -233,17 +270,40 @@ export const UserDrawer = ({
               >
                 <DocumentsList
                   hideCheckbox
-                  actorId={user?.id || undefined}
+                  actorId={liveUser?.id || undefined}
                   filters={{
-                    authorsIds: user ? [user.id] : undefined,
+                    authorsIds: liveUser ? [liveUser.id] : undefined,
                   }}
                 />
               </TabsContent>
-              <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
-                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <MessageSquare size={32} className="text-gray-300" />
-                  No chats yet
-                </div>
+              <TabsContent
+                value="chats"
+                className="flex h-[calc(100%-36px-8px)] flex-col"
+              >
+                {selectedChat ? (
+                  <>
+                    <div className="flex items-center gap-2 border-b px-1 py-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => setSelectedChat(null)}
+                      >
+                        <ArrowLeft size={14} />
+                      </Button>
+                      <span className="text-sm font-medium">
+                        {selectedChat.name}
+                      </span>
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <ChatWindow chatId={selectedChat.id} teamId={teamId} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="overflow-auto">
+                    <ChatsList teamId={teamId} onChatSelect={setSelectedChat} />
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </>

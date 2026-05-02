@@ -24,6 +24,7 @@ export const ActionLogsList: FC<IProps> = ({ actorIds, documentIds }) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useGetActionLogsInfiniteScroll({
     limit: 10,
     teamId: selectedTeam?.id || '',
@@ -32,6 +33,14 @@ export const ActionLogsList: FC<IProps> = ({ actorIds, documentIds }) => {
   });
   const actionLogs =
     actionLogsData?.pages.map(({ data }) => data.actionLogs).flat(1) || [];
+
+  if (isLoading) {
+    return (
+      <article className="flex items-center justify-center py-12">
+        <LoaderCircle size={24} className="animate-spin text-gray-400" />
+      </article>
+    );
+  }
 
   if (actionLogs.length === 0) {
     return (

@@ -5,3 +5,4 @@ export * from './document';
 export * from './tag';
 export * from './user';
 export * from './notification';
+export * from './action-log';
