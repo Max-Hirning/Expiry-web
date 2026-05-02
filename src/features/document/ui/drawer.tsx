@@ -146,7 +146,7 @@ export const DocumentDrawer = ({
                   Activity
                 </TabsTrigger>
                 <TabsTrigger
-                  value="documents"
+                  value="files"
                   className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
                 >
                   <FileText size={16} />
@@ -177,7 +177,7 @@ export const DocumentDrawer = ({
                 />
               </TabsContent>
               <TabsContent
-                value="documents"
+                value="files"
                 className="h-[calc(100%-36px-8px)] overflow-auto"
               >
                 <FilesList documentId={document.id} teamId={teamId} />
