@@ -94,14 +94,6 @@ export const UserDrawer = ({
               </Breadcrumb>
               <Button
                 variant="outline"
-                size="sm"
-                className="h-9 gap-2 rounded-full shadow-sm"
-              >
-                <SquareArrowOutUpRight size={16} />
-                Full page
-              </Button>
-              <Button
-                variant="outline"
                 size="icon"
                 className="h-9 w-9 rounded-full shadow-sm"
                 onClick={onClose}

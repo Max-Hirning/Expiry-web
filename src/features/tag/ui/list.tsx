@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
   BulkMenu,
   Button,
+  InfiniteScroll,
 } from 'shared/ui';
 
 import { TagsListElement } from './element';
@@ -29,7 +30,13 @@ export const TagsList = () => {
     selectedDocumentIds,
   } = useTeamStore();
 
-  const { data: tagsData, isLoading } = useGetTagsInfiniteScroll({
+  const {
+    data: tagsData,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetTagsInfiniteScroll({
     limit: 10,
     teamId: selectedTeam?.id || '',
     ...(tagsAndDocumentsFilters || {}),
@@ -41,23 +48,23 @@ export const TagsList = () => {
     [tags],
   );
 
+  if (isLoading) {
+    return <LoaderCircle size={24} className="m-auto my-4 animate-spin" />;
+  }
+
+  if (tags.length === 0) {
+    return <p className="m-auto text-base">No Documents found</p>;
+  }
+
   return (
     <>
-      <p
-        className={cn(
-          'sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400',
-          isLoading && 'hidden',
-        )}
-      >
+      <p className="sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400">
         {documentsCounter} search result{documentsCounter > 1 ? 's' : ''}
       </p>
       <Accordion
         type="multiple"
         defaultValue={[]}
-        className={cn(
-          'w-full rounded-lg border shadow-sm',
-          (tags.length === 0 || isLoading) && 'hidden',
-        )}
+        className="w-full rounded-lg border shadow-sm"
       >
         {tags.map((tag, index) => {
           return (
@@ -92,18 +99,17 @@ export const TagsList = () => {
           );
         })}
       </Accordion>
-      <LoaderCircle
-        size={24}
-        className={cn('m-auto my-4 animate-spin', !isLoading && 'hidden')}
-      />
-      <p
-        className={cn(
-          'm-auto text-base',
-          !(tags.length === 0 && !isLoading) && 'hidden',
-        )}
+      <InfiniteScroll
+        next={fetchNextPage}
+        hasMore={hasNextPage}
+        isLoading={isFetchingNextPage}
       >
-        No Documents found
-      </p>
+        {hasNextPage && (
+          <div className="flex justify-center py-4">
+            <LoaderCircle size={24} className="animate-spin text-zinc-400" />
+          </div>
+        )}
+      </InfiniteScroll>
       <BulkMenu
         onResetAction={resetSelectedTagIds}
         selectedAmount={selectedTagsIds.size}
