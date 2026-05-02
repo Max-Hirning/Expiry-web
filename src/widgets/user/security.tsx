@@ -1,11 +1,8 @@
 'use client';
 
-import { type } from 'os';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'entities/auth';
-import { useUpdateUser, useUpdateUserPassword } from 'entities/user';
-import { Save } from 'lucide-react';
+import { useUpdateUserPassword } from 'entities/user';
 import { useForm } from 'react-hook-form';
 
 import {
