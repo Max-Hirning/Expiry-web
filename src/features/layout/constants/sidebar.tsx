@@ -1,6 +1,7 @@
 import {
   Bell,
   FileText,
+  History,
   Home,
   MessageSquare,
   SlidersHorizontal,
@@ -13,6 +14,7 @@ export const mainNavItems = [
   { label: 'Documents', href: '/documents', icon: FileText },
   { label: 'Chats', href: '/chats', icon: MessageSquare },
   { label: 'Teammates', href: '/teammates', icon: Users },
+  { label: 'Action Logs', href: '/action-logs', icon: History },
 ];
 export const bottomNavItems = [
   { label: 'Preferences', href: '/preferences', icon: SlidersHorizontal },
