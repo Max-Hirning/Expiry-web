@@ -1,9 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { format } from 'date-fns';
 import { IUser, useUpdateUserPosition } from 'entities';
 import { Permissions, usePermissions } from 'entities/auth';
 import {
+  ArrowLeft,
   FileText,
   History,
   MessageSquare,
@@ -12,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { ActionLogsList } from 'features/action-log';
+import { ChatsList, ChatWindow } from 'features/chats';
 import { DocumentsList } from 'features/document';
 import { cn } from 'shared/lib';
 import { TeamMemberRoles } from 'shared/types';
@@ -65,12 +69,22 @@ export const UserDrawer = ({
   open,
   onClose,
 }: UserDrawerProps) => {
+  const [selectedChat, setSelectedChat] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const { mutate: updateUserPosition, isPending: isUpdateUserPosition } =
     useUpdateUserPosition();
   const permissions = usePermissions({
     permissions: [Permissions.UPDATE_USER_TEAM_POSITION],
     teamId,
   });
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedChat(null);
+    }
+  }, [open]);
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -239,11 +253,34 @@ export const UserDrawer = ({
                   }}
                 />
               </TabsContent>
-              <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
-                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <MessageSquare size={32} className="text-gray-300" />
-                  No chats yet
-                </div>
+              <TabsContent
+                value="chats"
+                className="flex h-[calc(100%-36px-8px)] flex-col"
+              >
+                {selectedChat ? (
+                  <>
+                    <div className="flex items-center gap-2 border-b px-1 py-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => setSelectedChat(null)}
+                      >
+                        <ArrowLeft size={14} />
+                      </Button>
+                      <span className="text-sm font-medium">
+                        {selectedChat.name}
+                      </span>
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <ChatWindow chatId={selectedChat.id} teamId={teamId} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="overflow-auto">
+                    <ChatsList teamId={teamId} onChatSelect={setSelectedChat} />
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </>
