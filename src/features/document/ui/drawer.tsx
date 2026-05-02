@@ -3,13 +3,7 @@
 import { format } from 'date-fns';
 import { useGetChat } from 'entities/chat';
 import { IDocumentListItem } from 'entities/document';
-import {
-  FileText,
-  History,
-  MessageSquare,
-  SquareArrowOutUpRight,
-  X,
-} from 'lucide-react';
+import { FileText, History, MessageSquare, X } from 'lucide-react';
 
 import { ActionLogsList } from 'features/action-log';
 import { ChatWindow } from 'features/chats';
@@ -32,6 +26,8 @@ import {
   TabsList,
   TabsTrigger,
 } from 'shared/ui';
+
+import { FilesList } from './files-list';
 
 interface DocumentDrawerProps {
   document: IDocumentListItem | null;
@@ -150,7 +146,7 @@ export const DocumentDrawer = ({
                   Activity
                 </TabsTrigger>
                 <TabsTrigger
-                  value="documents"
+                  value="files"
                   className="w-fit gap-2 rounded-lg py-1 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
                 >
                   <FileText size={16} />
@@ -181,13 +177,10 @@ export const DocumentDrawer = ({
                 />
               </TabsContent>
               <TabsContent
-                value="documents"
+                value="files"
                 className="h-[calc(100%-36px-8px)] overflow-auto"
               >
-                <div className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
-                  <FileText size={32} className="text-gray-300" />
-                  No files yet
-                </div>
+                <FilesList documentId={document.id} teamId={teamId} />
               </TabsContent>
               {document.chat && (
                 <TabsContent value="chats" className="h-[calc(100%-36px-8px)]">
