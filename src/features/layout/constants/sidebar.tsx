@@ -4,6 +4,7 @@ import {
   History,
   Home,
   MessageSquare,
+  Shield,
   SlidersHorizontal,
   User,
   Users,
@@ -19,5 +20,6 @@ export const mainNavItems = [
 export const bottomNavItems = [
   { label: 'Preferences', href: '/preferences', icon: SlidersHorizontal },
   { label: 'Profile', href: '/profile', icon: User },
+  { label: 'Security', href: '/security', icon: Shield },
   { label: 'Notifications', href: '/notifications', icon: Bell },
 ];
