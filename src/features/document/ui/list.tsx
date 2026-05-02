@@ -7,11 +7,11 @@ import {
   IGetDocumentsParams,
   useGetDocumentsInfiniteScroll,
 } from 'entities/document';
-import { FileText } from 'lucide-react';
+import { FileText, LoaderCircle } from 'lucide-react';
 
 import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
-import { Card } from 'shared/ui';
+import { Card, InfiniteScroll } from 'shared/ui';
 
 import { DocumentDrawer } from './drawer';
 import { DocumentsListElement } from './element';
@@ -33,7 +33,13 @@ export const DocumentsList: FC<IProps> = ({
   const [selectedDocument, setSelectedDocument] =
     useState<IDocumentListItem | null>(null);
 
-  const { data: documentsData, isLoading } = useGetDocumentsInfiniteScroll({
+  const {
+    data: documentsData,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetDocumentsInfiniteScroll({
     limit: 10,
     teamId: selectedTeam?.id || '',
     ...(filters || {}),
@@ -63,6 +69,17 @@ export const DocumentsList: FC<IProps> = ({
             onRowClick={setSelectedDocument}
           />
         ))}
+        <InfiniteScroll
+          next={fetchNextPage}
+          hasMore={hasNextPage}
+          isLoading={isFetchingNextPage}
+        >
+          {hasNextPage && (
+            <div className="flex justify-center py-4">
+              <LoaderCircle size={24} className="animate-spin text-zinc-400" />
+            </div>
+          )}
+        </InfiniteScroll>
         <DocumentDrawer
           document={selectedDocument}
           open={!!selectedDocument}
@@ -94,6 +111,17 @@ export const DocumentsList: FC<IProps> = ({
             onRowClick={setSelectedDocument}
           />
         ))}
+        <InfiniteScroll
+          next={fetchNextPage}
+          hasMore={hasNextPage}
+          isLoading={isFetchingNextPage}
+        >
+          {hasNextPage && (
+            <div className="flex justify-center py-4">
+              <LoaderCircle size={24} className="animate-spin text-zinc-400" />
+            </div>
+          )}
+        </InfiniteScroll>
         <DocumentDrawer
           document={selectedDocument}
           open={!!selectedDocument}
