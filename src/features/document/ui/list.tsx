@@ -9,7 +9,6 @@ import {
 } from 'entities/document';
 import { FileText, LoaderCircle } from 'lucide-react';
 
-import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
 import { Card, InfiniteScroll } from 'shared/ui';
 
@@ -47,7 +46,15 @@ export const DocumentsList: FC<IProps> = ({
   const documents =
     documentsData?.pages.flatMap(page => page.data.documents) ?? [];
 
-  if (!isLoading && documents.length === 0) {
+  if (isLoading) {
+    return (
+      <article className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
+        <LoaderCircle size={32} className="animate-spin text-gray-300" />
+      </article>
+    );
+  }
+
+  if (documents.length === 0) {
     return (
       <article className="flex flex-col items-center justify-center gap-2 py-12 text-sm text-gray-400">
         <FileText size={32} className="text-gray-300" />
@@ -92,12 +99,7 @@ export const DocumentsList: FC<IProps> = ({
 
   return (
     <>
-      <p
-        className={cn(
-          'sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400',
-          isLoading && 'hidden',
-        )}
-      >
+      <p className="sticky top-0 z-50 bg-white pb-2 text-sm text-gray-400">
         {documents.length} search result{documents.length > 1 ? 's' : ''}
       </p>
       <Card>

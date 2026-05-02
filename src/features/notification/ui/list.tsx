@@ -48,7 +48,7 @@ export const NotificationsList = () => {
 
   const types = TYPES_BY_TAB[activeTab];
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetNotificationsInfiniteScroll({
       limit: 10,
       search: debouncedSearch.trim() || undefined,
@@ -118,7 +118,15 @@ export const NotificationsList = () => {
     [toggleReadNotificationId],
   );
 
-  if (notifications.length === 0 && !isFetchingNextPage) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 py-16 text-sm text-zinc-400">
+        <LoaderCircle size={32} className="animate-spin text-zinc-300" />
+      </div>
+    );
+  }
+
+  if (notifications.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-16 text-sm text-zinc-400">
         <Bell size={32} className="text-zinc-300" />
