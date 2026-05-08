@@ -11,6 +11,7 @@ import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
 import { Button, InfiniteScroll } from 'shared/ui';
 
+import { useSelectTeam } from '../../hooks';
 import { TeamSelectorListElement } from './element';
 
 export const TeamSelector = () => {
@@ -28,7 +29,8 @@ export const TeamSelector = () => {
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const { selectTeam, selectedTeam } = useTeamStore();
+  const { selectedTeam } = useTeamStore();
+  const selectTeam = useSelectTeam();
 
   useEffect(() => {
     const team = teams[0];

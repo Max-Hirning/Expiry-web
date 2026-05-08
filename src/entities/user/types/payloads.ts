@@ -17,6 +17,7 @@ export interface IUpdateUser
       'teamNews' | 'documentNews' | 'inAppNotifications' | 'emailNotifications'
     >
   >;
+  selectedTeamId?: string;
 }
 export interface IUpdateUserPassword {
   oldPassword: string;

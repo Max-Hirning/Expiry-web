@@ -3,12 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { TeamSidebarSelector } from 'features/team';
 import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
 
 import { bottomNavItems, mainNavItems } from '../constants';
 
-export const SideBar = () => {
+type Props = {
+  selectedTeamId: string | null;
+};
+
+export const SideBar = ({ selectedTeamId }: Props) => {
   const { selectedTeam } = useTeamStore();
   const pathname = usePathname();
 
@@ -21,17 +26,7 @@ export const SideBar = () => {
         <h1 className="px-3 py-2 text-lg font-bold tracking-[3px] text-white">
           Expiry
         </h1>
-        {selectedTeam && (
-          <div className="mb-2 flex items-center gap-3 rounded-2xl bg-white px-4">
-            <img
-              src={selectedTeam.logo?.url}
-              width={56}
-              height={56}
-              alt={`${selectedTeam.name} logo`}
-            />
-            <p className="text-base font-semibold">{selectedTeam.name}</p>
-          </div>
-        )}
+        <TeamSidebarSelector selectedTeamId={selectedTeamId} />
       </div>
 
       <div className="flex flex-col gap-0.5 px-0">

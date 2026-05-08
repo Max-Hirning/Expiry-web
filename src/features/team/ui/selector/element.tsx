@@ -9,7 +9,6 @@ import { ITeam } from 'entities/team';
 import { ChessQueen, EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
 
 import { cn } from 'shared/lib';
-import { useTeamStore } from 'shared/store';
 import { TeamMemberRoles } from 'shared/types';
 import {
   Button,
@@ -19,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from 'shared/ui';
 
+import { useSelectTeam } from '../../hooks';
 import { TeamDeleteAlert } from '../alert';
 import { TeamStatProgress } from '../stat-progress';
 
@@ -35,7 +35,7 @@ export const TeamSelectorListElement: FC<IProps> = ({
 }) => {
   const { push } = useRouter();
   const [open, setOpen] = useState<boolean>(false);
-  const { selectTeam } = useTeamStore();
+  const selectTeam = useSelectTeam();
 
   return (
     <>
