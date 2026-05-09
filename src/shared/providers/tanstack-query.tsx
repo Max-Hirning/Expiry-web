@@ -9,13 +9,13 @@ import {
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { queryClient } from 'shared/lib';
+import { makeQueryClient, queryClient } from 'shared/lib';
 
 let browserQueryClient: QueryClient | undefined;
 
 const getQueryClient = () => {
   if (isServer) {
-    return queryClient;
+    return makeQueryClient();
   }
 
   if (!browserQueryClient) {

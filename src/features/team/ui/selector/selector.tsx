@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -11,10 +11,14 @@ import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
 import { Button, InfiniteScroll } from 'shared/ui';
 
-import { useSelectTeam } from '../../hooks';
 import { TeamSelectorListElement } from './element';
 
-export const TeamSelector = () => {
+interface IProps {
+  selectedTeamIdSSR: string | null;
+}
+
+export const TeamSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
+  const { selectedTeam: selectedTeamClient } = useTeamStore();
   const {
     data: teamsData,
     fetchNextPage,
@@ -25,20 +29,13 @@ export const TeamSelector = () => {
     sortField: 'createdAt',
     sortOrder: 'desc',
   });
-  const teams = teamsData?.pages.map(({ data }) => data.teams).flat(1) || [];
-
+  const teams = teamsData?.pages.flatMap(({ data }) => data.teams) ?? [];
+  const selectedTeamId = selectedTeamClient?.id || selectedTeamIdSSR;
+  const selectedTeam = useMemo(
+    () => teams.find(team => team.id === selectedTeamId),
+    [selectedTeamId],
+  );
   const [open, setOpen] = useState<boolean>(false);
-
-  const { selectedTeam } = useTeamStore();
-  const selectTeam = useSelectTeam();
-
-  useEffect(() => {
-    const team = teams[0];
-
-    if (selectedTeam === null && team) {
-      selectTeam(team);
-    }
-  }, [teams]);
 
   return (
     <div
@@ -82,7 +79,7 @@ export const TeamSelector = () => {
       >
         {teams.map(team => (
           <TeamSelectorListElement
-            isSelected={team.id === selectedTeam?.id}
+            isSelected={team.id === selectedTeamId}
             key={team.id}
             team={team}
           />

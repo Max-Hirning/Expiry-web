@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 
 import { TeamSidebarSelector } from 'features/team';
 import { cn } from 'shared/lib';
-import { useTeamStore } from 'shared/store';
 
 import { bottomNavItems, mainNavItems } from '../constants';
 
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export const SideBar = ({ selectedTeamId }: Props) => {
-  const { selectedTeam } = useTeamStore();
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -26,12 +24,12 @@ export const SideBar = ({ selectedTeamId }: Props) => {
         <h1 className="px-3 py-2 text-lg font-bold tracking-[3px] text-white">
           Expiry
         </h1>
-        <TeamSidebarSelector selectedTeamId={selectedTeamId} />
+        <TeamSidebarSelector selectedTeamIdSSR={selectedTeamId} />
       </div>
 
       <div className="flex flex-col gap-0.5 px-0">
         <p className="flex h-8 items-center px-2 text-[10px] uppercase text-[#a1a1aa] opacity-70">
-          {selectedTeam?.name ?? 'Menu'}
+          Menu
         </p>
         {mainNavItems.map(({ label, href, icon: Icon }) => (
           <Link

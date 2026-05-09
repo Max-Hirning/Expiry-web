@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import { useGetTeamsInfiniteScroll } from 'entities/team';
-import { ChevronDown, LoaderCircle } from 'lucide-react';
+import { ChevronDown, CircleQuestionMark, LoaderCircle } from 'lucide-react';
 
 import { cn } from 'shared/lib';
 import { useTeamStore } from 'shared/store';
@@ -16,40 +16,27 @@ import {
 
 import { useSelectTeam } from '../../hooks';
 
-type Props = {
-  selectedTeamId: string | null;
-};
+interface IProps {
+  selectedTeamIdSSR: string | null;
+}
 
-export const TeamSidebarSelector = ({ selectedTeamId }: Props) => {
-  const { selectedTeam } = useTeamStore();
+export const TeamSidebarSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
+  const { selectedTeam: selectedTeamClient } = useTeamStore();
   const selectTeam = useSelectTeam();
   const [open, setOpen] = useState<boolean>(false);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetTeamsInfiniteScroll({
       limit: 10,
       sortField: 'createdAt',
       sortOrder: 'desc',
     });
+
   const teams = data?.pages.flatMap(({ data }) => data.teams) ?? [];
-
-  useEffect(() => {
-    if (selectedTeam || teams.length === 0) {
-      return;
-    }
-    const fromCookie = selectedTeamId
-      ? teams.find(t => t.id === selectedTeamId)
-      : null;
-    const target = fromCookie ?? teams[0];
-
-    if (target) {
-      selectTeam(target);
-    }
-  }, [teams, selectedTeam, selectedTeamId]);
-
-  if (!selectedTeam) {
-    return null;
-  }
+  const selectedTeamId = selectedTeamClient?.id || selectedTeamIdSSR;
+  const selectedTeam = useMemo(
+    () => teams.find(team => team.id === selectedTeamId),
+    [selectedTeamId],
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,15 +45,19 @@ export const TeamSidebarSelector = ({ selectedTeamId }: Props) => {
           type="button"
           className="mb-2 flex w-full items-center gap-3 rounded-2xl bg-white px-4 py-2 text-left"
         >
-          <img
-            src={selectedTeam.logo?.url}
-            width={40}
-            height={40}
-            alt={`${selectedTeam.name} logo`}
-            className="rounded-full"
-          />
+          {selectedTeam ? (
+            <img
+              src={selectedTeam.logo?.url}
+              width={40}
+              height={40}
+              alt={`${selectedTeam.name} logo`}
+              className="rounded-full"
+            />
+          ) : (
+            <CircleQuestionMark />
+          )}
           <p className="flex-1 truncate text-base font-semibold">
-            {selectedTeam.name}
+            {selectedTeam ? selectedTeam.name : 'Select a team'}
           </p>
           <ChevronDown size={16} className="text-gray-500" />
         </button>
@@ -83,7 +74,9 @@ export const TeamSidebarSelector = ({ selectedTeamId }: Props) => {
                 }}
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-gray-100',
-                  team.id === selectedTeam.id && 'bg-gray-100 font-semibold',
+                  selectedTeam &&
+                    team.id === selectedTeam.id &&
+                    'bg-gray-100 font-semibold',
                 )}
               >
                 <img
