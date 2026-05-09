@@ -10,9 +10,11 @@ import {
 export const getUser = async (
   userId: string,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<IUserResponse> => {
   const response = await api.get(`/users/${userId}`, {
     signal,
+    headers,
   });
 
   return response.data;

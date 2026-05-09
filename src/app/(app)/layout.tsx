@@ -4,8 +4,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { getUserSession } from 'entities/auth';
 import { getTeams, IGetTeamsParams } from 'entities/team';
+import { getUserSessionInfo } from 'entities/user';
 
 import { SideBar } from 'features';
 import { QueryKeys } from 'shared/constants';
@@ -28,25 +28,32 @@ const Layout = async ({ children }: Props) => {
   const queryClient = makeQueryClient();
 
   try {
-    const userSession = await getUserSession();
+    const userSession = await getUserSessionInfo();
 
-    selectedTeamId = userSession.selectedTeamId;
+    selectedTeamId = userSession.data.user.selectedTeamId;
 
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: [QueryKeys.GET_INFINITE_TEAMS, TEAMS_QUERY],
-      queryFn: ({ pageParam }) =>
-        getTeams({ ...TEAMS_QUERY, cursor: pageParam }, undefined, {
-          Cookie: cookieHeader,
-        }),
-      initialPageParam: undefined,
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: [QueryKeys.GET_USERS, userSession.data.user.id],
+        queryFn: () => userSession,
+        initialPageParam: undefined,
+      }),
+      queryClient.prefetchInfiniteQuery({
+        queryKey: [QueryKeys.GET_INFINITE_TEAMS, TEAMS_QUERY],
+        queryFn: ({ pageParam }) =>
+          getTeams({ ...TEAMS_QUERY, cursor: pageParam }, undefined, {
+            Cookie: cookieHeader,
+          }),
+        initialPageParam: undefined,
+      }),
+    ]);
   } catch {
     redirect('/auth/sign-in');
   }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <SideBar selectedTeamId={selectedTeamId} />
+      <SideBar selectedTeamIdSSR={selectedTeamId} />
       {children}
     </HydrationBoundary>
   );

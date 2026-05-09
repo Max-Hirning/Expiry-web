@@ -1,5 +1,7 @@
 'use client';
 
+import { FC } from 'react';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -8,11 +10,11 @@ import { cn } from 'shared/lib';
 
 import { bottomNavItems, mainNavItems } from '../constants';
 
-type Props = {
-  selectedTeamId: string | null;
-};
+interface IProps {
+  selectedTeamIdSSR: string | null;
+}
 
-export const SideBar = ({ selectedTeamId }: Props) => {
+export const SideBar: FC<IProps> = ({ selectedTeamIdSSR }) => {
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -24,7 +26,7 @@ export const SideBar = ({ selectedTeamId }: Props) => {
         <h1 className="px-3 py-2 text-lg font-bold tracking-[3px] text-white">
           Expiry
         </h1>
-        <TeamSidebarSelector selectedTeamIdSSR={selectedTeamId} />
+        <TeamSidebarSelector selectedTeamIdSSR={selectedTeamIdSSR} />
       </div>
 
       <div className="flex flex-col gap-0.5 px-0">

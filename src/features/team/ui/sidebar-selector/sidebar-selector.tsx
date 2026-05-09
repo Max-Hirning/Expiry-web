@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useMemo, useState } from 'react';
 
+import { useSession } from 'entities/auth';
 import { useGetTeamsInfiniteScroll } from 'entities/team';
 import { ChevronDown, CircleQuestionMark, LoaderCircle } from 'lucide-react';
 
@@ -22,6 +23,7 @@ interface IProps {
 
 export const TeamSidebarSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
   const { selectedTeam: selectedTeamClient } = useTeamStore();
+  const { data: session } = useSession();
   const selectTeam = useSelectTeam();
   const [open, setOpen] = useState<boolean>(false);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -32,11 +34,21 @@ export const TeamSidebarSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
     });
 
   const teams = data?.pages.flatMap(({ data }) => data.teams) ?? [];
-  const selectedTeamId = selectedTeamClient?.id || selectedTeamIdSSR;
+  const selectedTeamId =
+    selectedTeamClient?.id ??
+    session?.data.user.selectedTeamId ??
+    selectedTeamIdSSR ??
+    undefined;
   const selectedTeam = useMemo(
     () => teams.find(team => team.id === selectedTeamId),
     [selectedTeamId],
   );
+
+  useEffect(() => {
+    if (!selectedTeamClient && selectedTeam) {
+      selectTeam(selectedTeam);
+    }
+  }, [selectedTeam, selectedTeamClient]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

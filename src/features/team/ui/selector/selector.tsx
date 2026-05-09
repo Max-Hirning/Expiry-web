@@ -1,9 +1,10 @@
 'use client';
 
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 
 import Link from 'next/link';
 
+import { useSession } from 'entities/auth';
 import { useGetTeamsInfiniteScroll } from 'entities/team';
 import { LoaderCircle, Maximize2, Minimize2, Plus } from 'lucide-react';
 
@@ -13,12 +14,13 @@ import { Button, InfiniteScroll } from 'shared/ui';
 
 import { TeamSelectorListElement } from './element';
 
-interface IProps {
+type Props = {
   selectedTeamIdSSR: string | null;
-}
+};
 
-export const TeamSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
+export const TeamSelector: FC<Props> = ({ selectedTeamIdSSR }) => {
   const { selectedTeam: selectedTeamClient } = useTeamStore();
+  const { data: session } = useSession();
   const {
     data: teamsData,
     fetchNextPage,
@@ -30,11 +32,12 @@ export const TeamSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
     sortOrder: 'desc',
   });
   const teams = teamsData?.pages.flatMap(({ data }) => data.teams) ?? [];
-  const selectedTeamId = selectedTeamClient?.id || selectedTeamIdSSR;
-  const selectedTeam = useMemo(
-    () => teams.find(team => team.id === selectedTeamId),
-    [selectedTeamId],
-  );
+  const selectedTeamId =
+    selectedTeamClient?.id ??
+    session?.data.user.selectedTeamId ??
+    selectedTeamIdSSR ??
+    undefined;
+  const selectedTeam = teams.find(team => team.id === selectedTeamId);
   const [open, setOpen] = useState<boolean>(false);
 
   return (
