@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getTeams, IGetTeamsParams } from 'entities/team';
-import { getUserSessionInfo } from 'entities/user';
+// eslint-disable-next-line no-restricted-imports
+import { getUserSessionInfo } from 'entities/user/api/server';
 
 import { SideBar } from 'features';
 import { QueryKeys } from 'shared/constants';

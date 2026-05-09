@@ -3,4 +3,3 @@ export * from './post';
 export * from './put';
 export * from './patch';
 export * from './delete';
-export * from './server';

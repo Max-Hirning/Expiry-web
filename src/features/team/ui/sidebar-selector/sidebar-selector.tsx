@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { useSession } from 'entities/auth';
 import { useGetTeamsInfiniteScroll } from 'entities/team';
@@ -39,10 +39,7 @@ export const TeamSidebarSelector: FC<IProps> = ({ selectedTeamIdSSR }) => {
     session?.data.user.selectedTeamId ??
     selectedTeamIdSSR ??
     undefined;
-  const selectedTeam = useMemo(
-    () => teams.find(team => team.id === selectedTeamId),
-    [selectedTeamId],
-  );
+  const selectedTeam = teams.find(team => team.id === selectedTeamId);
 
   useEffect(() => {
     if (!selectedTeamClient && selectedTeam) {

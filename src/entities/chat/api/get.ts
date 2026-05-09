@@ -12,10 +12,12 @@ import {
 export const getChats = async (
   params: IGetChatsParams,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<IChatsResponse> => {
   const response = await api.get(`/chats/${params.teamId}`, {
     signal,
     params: { cursor: params.cursor, limit: params.limit },
+    headers,
   });
 
   return response.data;

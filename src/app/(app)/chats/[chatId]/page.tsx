@@ -1,9 +1,10 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { getUserSession } from 'entities/auth';
+// eslint-disable-next-line no-restricted-imports
+import { getUserSession } from 'entities/auth/api/server';
 import { getChat, getMessages, IGetMessagesParams } from 'entities/chat';
 import { ArrowLeft } from 'lucide-react';
 
@@ -24,17 +25,17 @@ const ChatPage = async ({ params }: Props) => {
   const cookieHeader = cookieStore.toString();
   const queryClient = makeQueryClient();
 
-  let teamId: string | null = null;
-  let chatName = '';
+  let teamId: string;
+  let chatName: string;
 
   try {
     const userSession = await getUserSession();
 
-    teamId = userSession.selectedTeamId;
-
-    if (!teamId) {
+    if (!userSession.selectedTeamId) {
       redirect('/chats');
     }
+
+    teamId = userSession.selectedTeamId;
 
     const chatParams = { teamId, chatId };
     const messagesParams: IGetMessagesParams = {
@@ -64,7 +65,8 @@ const ChatPage = async ({ params }: Props) => {
         initialPageParam: undefined,
       }),
     ]);
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
     redirect('/auth/sign-in');
   }
 
