@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getActionLogs, IGetActionLogsParams } from 'entities/action-log';
@@ -38,7 +38,8 @@ const ActionLogsPage = async () => {
         initialPageParam: undefined,
       });
     }
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
     redirect('/auth/sign-in');
   }
 

@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 // eslint-disable-next-line no-restricted-imports
@@ -36,7 +36,8 @@ const Page = async () => {
         initialPageParam: undefined,
       });
     }
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
     redirect('/auth/sign-in');
   }
 
