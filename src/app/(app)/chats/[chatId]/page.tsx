@@ -1,17 +1,15 @@
 import { cookies } from 'next/headers';
-import Link from 'next/link';
 import { redirect, unstable_rethrow } from 'next/navigation';
 
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 // eslint-disable-next-line no-restricted-imports
 import { getUserSession } from 'entities/auth/api/server';
 import { getChat, getMessages, IGetMessagesParams } from 'entities/chat';
-import { ArrowLeft } from 'lucide-react';
 
 import { ChatWindowWidget } from 'widgets';
+import { ChatHeader } from 'features/chats';
 import { QueryKeys } from 'shared/constants';
 import { makeQueryClient } from 'shared/lib';
-import { Button } from 'shared/ui';
 
 interface Props {
   params: Promise<{ chatId: string }>;
@@ -72,14 +70,7 @@ const ChatPage = async ({ params }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <header className="flex items-center gap-2 border-b px-4 py-3 header-position">
-        <Link href="/chats">
-          <Button variant="ghost" size="icon" className="h-7 w-7">
-            <ArrowLeft size={14} />
-          </Button>
-        </Link>
-        <span className="text-sm font-medium">{chatName}</span>
-      </header>
+      <ChatHeader teamId={teamId} chatId={chatId} initialName={chatName} />
       <main className="flex-1 overflow-hidden main-position">
         <ChatWindowWidget chatId={chatId} teamIdSSR={teamId} />
       </main>

@@ -1,6 +1,10 @@
 import { ILastChatMessage } from 'entities/document';
 
-import { ChatMemberStatus, ICursorPaginationResponse } from 'shared/types';
+import {
+  ChatAiAgentVisibility,
+  ChatMemberStatus,
+  ICursorPaginationResponse,
+} from 'shared/types';
 
 export interface IChat {
   id: string;
@@ -8,6 +12,8 @@ export interface IChat {
   updatedAt: string;
   unreadCount: number;
   name: string;
+  aiAgentEnabled: boolean;
+  aiAgentVisibility: ChatAiAgentVisibility;
 }
 
 export interface IChatMember {
@@ -27,8 +33,10 @@ export interface IChatMessage {
   updatedAt: string;
   lastEditedAt: string | null;
   message: string;
+  isFromAiAgent: boolean;
   parentMessageId: string | null;
-  authorId: string;
+  authorId: string | null;
+  visibleToMemberId: string | null;
   chatId: string;
   chatMessageReadStatuses: Record<string, IChatMessageReadStatusEntry>;
 }
@@ -101,5 +109,12 @@ export interface IMarkMessagesReadResponse {
   message: string;
   data: {
     readStatuses: IChatMessageReadStatus[];
+  };
+}
+
+export interface IUpdateChatResponse {
+  message: string;
+  data: {
+    chat: IChat;
   };
 }
