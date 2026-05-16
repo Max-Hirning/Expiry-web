@@ -1,6 +1,26 @@
 import { api } from 'shared/lib';
 
-import { IEditMessage, IEditMessageResponse } from '../types';
+import {
+  IEditMessage,
+  IEditMessageResponse,
+  IUpdateChat,
+  IUpdateChatResponse,
+} from '../types';
+
+export const updateChat = async (
+  {
+    teamId,
+    chatId,
+    ...payload
+  }: IUpdateChat & { teamId: string; chatId: string },
+  signal?: AbortSignal,
+): Promise<IUpdateChatResponse> => {
+  const response = await api.put(`/chats/${teamId}/${chatId}`, payload, {
+    signal,
+  });
+
+  return response.data;
+};
 
 export const editMessage = async (
   {

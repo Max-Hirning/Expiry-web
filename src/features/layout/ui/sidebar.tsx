@@ -1,15 +1,20 @@
 'use client';
 
+import { FC } from 'react';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { TeamSidebarSelector } from 'features/team';
 import { cn } from 'shared/lib';
-import { useTeamStore } from 'shared/store';
 
 import { bottomNavItems, mainNavItems } from '../constants';
 
-export const SideBar = () => {
-  const { selectedTeam } = useTeamStore();
+interface IProps {
+  selectedTeamIdSSR: string | null;
+}
+
+export const SideBar: FC<IProps> = ({ selectedTeamIdSSR }) => {
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -21,22 +26,12 @@ export const SideBar = () => {
         <h1 className="px-3 py-2 text-lg font-bold tracking-[3px] text-white">
           Expiry
         </h1>
-        {selectedTeam && (
-          <div className="mb-2 flex items-center gap-3 rounded-2xl bg-white px-4">
-            <img
-              src={selectedTeam.logo?.url}
-              width={56}
-              height={56}
-              alt={`${selectedTeam.name} logo`}
-            />
-            <p className="text-base font-semibold">{selectedTeam.name}</p>
-          </div>
-        )}
+        <TeamSidebarSelector selectedTeamIdSSR={selectedTeamIdSSR} />
       </div>
 
       <div className="flex flex-col gap-0.5 px-0">
         <p className="flex h-8 items-center px-2 text-[10px] uppercase text-[#a1a1aa] opacity-70">
-          {selectedTeam?.name ?? 'Menu'}
+          Menu
         </p>
         {mainNavItems.map(({ label, href, icon: Icon }) => (
           <Link

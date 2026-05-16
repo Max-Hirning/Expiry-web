@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import Link from 'next/link';
 
+import { useSession } from 'entities/auth';
 import { useGetTeamsInfiniteScroll } from 'entities/team';
 import { LoaderCircle, Maximize2, Minimize2, Plus } from 'lucide-react';
 
@@ -13,7 +14,13 @@ import { Button, InfiniteScroll } from 'shared/ui';
 
 import { TeamSelectorListElement } from './element';
 
-export const TeamSelector = () => {
+type Props = {
+  selectedTeamIdSSR: string | null;
+};
+
+export const TeamSelector: FC<Props> = ({ selectedTeamIdSSR }) => {
+  const { selectedTeam: selectedTeamClient } = useTeamStore();
+  const { data: session } = useSession();
   const {
     data: teamsData,
     fetchNextPage,
@@ -24,19 +31,14 @@ export const TeamSelector = () => {
     sortField: 'createdAt',
     sortOrder: 'desc',
   });
-  const teams = teamsData?.pages.map(({ data }) => data.teams).flat(1) || [];
-
+  const teams = teamsData?.pages.flatMap(({ data }) => data.teams) ?? [];
+  const selectedTeamId =
+    selectedTeamClient?.id ??
+    session?.data.user.selectedTeamId ??
+    selectedTeamIdSSR ??
+    undefined;
+  const selectedTeam = teams.find(team => team.id === selectedTeamId);
   const [open, setOpen] = useState<boolean>(false);
-
-  const { selectTeam, selectedTeam } = useTeamStore();
-
-  useEffect(() => {
-    const team = teams[0];
-
-    if (selectedTeam === null && team) {
-      selectTeam(team);
-    }
-  }, [teams]);
 
   return (
     <div
@@ -80,7 +82,7 @@ export const TeamSelector = () => {
       >
         {teams.map(team => (
           <TeamSelectorListElement
-            isSelected={team.id === selectedTeam?.id}
+            isSelected={team.id === selectedTeamId}
             key={team.id}
             team={team}
           />

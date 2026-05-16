@@ -21,10 +21,12 @@ export const getDocument = async (
 export const getDocuments = async (
   { teamId, ...params }: IGetDocumentsParams,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<IDocumentsResponse> => {
   const response = await api.get(`/documents/${teamId}`, {
     signal,
     params,
+    headers,
   });
 
   return response.data;

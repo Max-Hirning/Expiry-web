@@ -46,6 +46,7 @@ export interface IUser {
   notificationPreferences: INotificationPreference;
   unReadNotifications: number;
   teamMembers: Record<string, TeamMemberRoles>;
+  selectedTeamId: string | null;
 }
 
 export interface IUserResponse {

@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
@@ -6,10 +8,12 @@ import { QueryKeys } from 'shared/constants';
 import { socket } from 'shared/lib';
 
 import {
+  IChat,
   IChatMember,
   IChatMessage,
   IChatMessageReadStatus,
   IChatResponse,
+  IChatsResponse,
   IMessagesResponse,
 } from '../types';
 
@@ -202,11 +206,60 @@ export const useChatSocket = ({ chatId, teamId }: UseChatSocketParams) => {
       });
     };
 
+    const handleChatUpdated = (updatedChat: IChat) => {
+      queryClient.setQueriesData<IChatResponse>(
+        {
+          queryKey: [QueryKeys.GET_CHATS],
+          predicate: query => {
+            const key = query.queryKey as [QueryKeys, { chatId?: string }?];
+
+            return key[1]?.chatId === updatedChat.id;
+          },
+        },
+        old => {
+          if (!old) {
+            return old;
+          }
+
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              chat: { ...old.data.chat, ...updatedChat },
+            },
+          };
+        },
+      );
+
+      queryClient.setQueriesData<InfiniteData<IChatsResponse>>(
+        { queryKey: [QueryKeys.GET_INFINITE_CHATS] },
+        old => {
+          if (!old?.pages.length) {
+            return old;
+          }
+
+          return {
+            ...old,
+            pages: old.pages.map(page => ({
+              ...page,
+              data: {
+                ...page.data,
+                chats: page.data.chats.map(c =>
+                  c.id === updatedChat.id ? { ...c, ...updatedChat } : c,
+                ),
+              },
+            })),
+          };
+        },
+      );
+    };
+
     socket.emit('chat:join', { chatId, teamId });
     socket.on('chat:message:new', handleNewMessage);
     socket.on('chat:message:updated', handleUpdatedMessage);
     socket.on('chat:message:deleted', handleDeletedMessage);
     socket.on('chat:messages:read', handleMessagesRead);
+    socket.on('chat:updated', handleChatUpdated);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
@@ -218,6 +271,7 @@ export const useChatSocket = ({ chatId, teamId }: UseChatSocketParams) => {
       socket.off('chat:message:updated', handleUpdatedMessage);
       socket.off('chat:message:deleted', handleDeletedMessage);
       socket.off('chat:messages:read', handleMessagesRead);
+      socket.off('chat:updated', handleChatUpdated);
     };
   }, [socket, chatId, teamId, queryClient]);
 };

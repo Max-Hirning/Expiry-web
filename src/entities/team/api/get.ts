@@ -16,10 +16,12 @@ export const getTeam = async (
 export const getTeams = async (
   params: IGetTeamsParams,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<ITeamsResponse> => {
   const response = await api.get('/teams', {
     signal,
     params,
+    headers,
   });
 
   return response.data;

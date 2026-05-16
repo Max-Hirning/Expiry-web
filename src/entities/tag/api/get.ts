@@ -21,10 +21,12 @@ export const getTag = async (
 export const getTags = async (
   { teamId, ...params }: IGetTagsParams,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<ITagsResponse> => {
   const response = await api.get(`/tags/${teamId}`, {
     signal,
     params,
+    headers,
   });
 
   return response.data;

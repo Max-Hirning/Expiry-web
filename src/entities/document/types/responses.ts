@@ -24,11 +24,13 @@ export interface ILastChatMessage {
   id: string;
   message: string;
   createdAt: string;
+  lastEditedAt: string | null;
+  isFromAiAgent: boolean;
   author: {
     id: string;
     userFullName: string;
     userAvatarUrl: string | null;
-  };
+  } | null;
 }
 
 export interface IDocumentChat {

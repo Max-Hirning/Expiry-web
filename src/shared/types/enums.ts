@@ -74,3 +74,8 @@ export enum ChatMemberStatus {
   ACTIVE = 'ACTIVE',
   DELETED = 'DELETED',
 }
+
+export enum ChatAiAgentVisibility {
+  ALL = 'ALL',
+  SENDER_ONLY = 'SENDER_ONLY',
+}
